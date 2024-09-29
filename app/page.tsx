@@ -4,82 +4,93 @@
 import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import Image from "next/image";
 import {useDroppable} from '@dnd-kit/core';
-import { useState } from "react";
-import  Droppable  from "./components/Droppable";
-import  Draggable from "./components/Draggable";
+import { useEffect, useState } from "react";
+import { Bounce, toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 function Home() {
-  const [parent, setParent] = useState(null);
-  // const draggable = (
-  //   <Draggable id="draggable">
-  //     Go ahead, drag me.
-  //   </Draggable>
-  // );
 
-  function dropHandler(ev:any) {
+
+  const [dropBorder, setDropBorder]= useState("");
+  const allowed_types = ["image/png", "image/jpeg", "image/jpg"];
+
+  const [previewImages, setPreviewImages] = useState<string[]>([]);
+
+  useEffect(() => {
+    return () => {
+      if (previewImages.length > 0) {
+        previewImages.forEach( previewImages => URL.revokeObjectURL(previewImages));
+      }
+    };
+  });
+
+  function dropHandler(ev: any) {
     console.log("File(s) dropped");
-  
-    // Prevent default behavior (Prevent file from being opened)
     ev.preventDefault();
+
+    setDropBorder("");
+
+    const newPreviewImages: string[] = []; 
+
     if (ev.dataTransfer.items) {
-        console.log("items : ", ev.dataTransfer.items);
-    } 
-  }
+      for (const item of ev.dataTransfer.items) {
+        if (item.kind === 'file') {
+          if (allowed_types.indexOf(item.type) === -1) {
+            toast.error('Format must be JPEG or PNG', {
+              position: "top-center",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "dark",
+              transition: Bounce,
+            });
+          } else {
+            const file = item.getAsFile();
+            console.log("file : ", file);
 
-  return (
+            if (file) {
+              newPreviewImages.push(URL.createObjectURL(file));
+            }
+          }
+        }
+      }
+    }
 
-    <div className="h-screen bg-gradient-to-r from-fuchsia-500 to-cyan-500 flex justify-center items-center">
-      <div className="font-mono font-bold text-xl text-center md:text-4xl">
-
-
-      <div id="drop_zone" onDrop={dropHandler} onDragOver={handleDragOver } className="bg-red-800 h-96">
-          <p>Drag one or more files to this <i>drop zone</i>.</p>
-        </div>
-
-
-        {/* Upload an image to remove the background */}
-        <DndContext onDragEnd={handleDragEnd}>
-          {/* {!parent ? draggable : null} */}
-          <Droppable id="droppable">
-            {/* {parent === "droppable" ? draggable : 'Drop here'} */}
-          </Droppable>
-        </DndContext>
-      </div>
-    </div>
-  );
-
-  function handleDragEnd({over}: any) {
-    console.log("OVER : ", over);
-    setParent(over ? over.id : null);
+    // Update the state once with all new images
+    setPreviewImages((prevImages) => [...prevImages, ...newPreviewImages]);
   }
 
   function handleDragOver(event: any) {
     event.preventDefault();
+    setDropBorder("border-4 border-dashed border-white");
     console.log("DRAG OVER");
   }
+
+  return (
+
+    <div className={`h-screen bg-gradient-to-r from-fuchsia-500 to-cyan-500 flex justify-center items-center`}>
+      <ToastContainer />
+      <div className={`flex items-center justify-center p-6 rounded font-mono font-bold text-xl text-center md:text-4xl ${dropBorder} h-96`}  onDrop={dropHandler} onDragOver={handleDragOver}>
+        
+        
+        <p>Drag one or more files to this <i>drop zone</i>.</p>
+
+        {
+          previewImages.map( (previewImage, index) => (
+            <div key={index} className="relative w-32 h-32 mx-2">
+              <Image src={previewImage} layout="fill" objectFit="cover" alt="upload"/>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  );
+
 }
 
 export default Home;
 
-// export default function Home() {
-
-
-
-
-//   function dragEnd(event: DragEndEvent) {
-//     const { over } = event;
-//     console.log(over);
-//   }
-
-//   return (
-//     <div className="h-screen bg-gradient-to-r from-fuchsia-500 to-cyan-500 flex justify-center items-center">
-//       <div className="font-mono font-bold text-xl text-center md:text-4xl">
-//         Upload an image to remove the background
-//       </div>
-
-//       <DndContext onDragEnd={dragEnd}>
-        
-//       </DndContext>
-//     </div>
-//   )
-// }
