@@ -1,9 +1,7 @@
 
 "use client";
 
-import { DndContext, DragEndEvent } from "@dnd-kit/core";
 import Image from "next/image";
-import {useDroppable} from '@dnd-kit/core';
 import { useEffect, useState } from "react";
 import { Bounce, toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -11,13 +9,13 @@ import 'react-toastify/dist/ReactToastify.css';
 
 function Home() {
 
+  const allowed_types:string[] = ["image/png", "image/jpeg", "image/jpg"];
+  const MAX_FILES:number = 4;
 
-  const [dropBorder, setDropBorder]= useState("");
-  const allowed_types = ["image/png", "image/jpeg", "image/jpg"];
-
+  const [dropBorder, setDropBorder]= useState<string>("");
   const [previewImages, setPreviewImages] = useState<string[]>([]);
-
   const [error, setError] = useState<string | null>(null); 
+
   useEffect(() => {
 
     if ( error !== null ) {
@@ -71,8 +69,8 @@ function Home() {
 
     // Update the state once with all new images
     setPreviewImages((prevImages) => {
-      if ( prevImages.length + newPreviewImages.length > 2) { 
-        setError("Maximum 2 images reached");
+      if ( prevImages.length + newPreviewImages.length > MAX_FILES) { 
+        setError(`Maximum ${MAX_FILES} reached`);
         return prevImages;
       }
       return [...prevImages, ...newPreviewImages]
@@ -94,31 +92,66 @@ function Home() {
     }
   }
 
+
+  function removeItem(index:number) {
+    setPreviewImages((prevImages) => {
+      const newImages = [...prevImages];
+      newImages.splice(index, 1);
+      return newImages;
+    });
+  }
+
   return (
 
     <div className={`h-screen bg-gradient-to-r from-fuchsia-500 to-cyan-500 flex justify-center items-center ${dropBorder}`}
-    onDrop={dropHandler}
-    onDragOver={handleDragOver}
-    onDragLeave={handleDragLeave}>
+      onDrop={dropHandler}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}>
+
       <ToastContainer />
       <div className={`flex items-center justify-center p-6 rounded 
-                        text-center text-5xl font-extrabold leading-tight h-96`}>
-        
-        {
-          previewImages.length
-        }
-        
-        <p>Drag one or more files to this <i>drop zone</i>.</p>
+                        text-center h-96`}>
 
         {
-          previewImages.map( (previewImage, index) => (
-            <div key={index} className="relative w-32 h-32 mx-2">
-              <div className="bg-red-500 h-96">
-                <Image src={previewImage} layout="fill" objectFit="cover" alt="upload"/>
-              </div>
-            </div>
-          ))
+          previewImages.length <= 0 && <p className="text-5xl font-extrabold leading-tight text-black">Drop your images</p>
         }
+        
+
+        
+        { previewImages.length > 0 &&
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {previewImages.map( (previewImage, index) => (
+              <div className="bg-white bg-opacity-10 backdrop-blur-lg rounded-lg shadow-lg p-4">
+              <div className="absolute top-0 right-4">
+                <button 
+                  onClick={() => {
+                    removeItem(index);
+                  }}
+                  className="flex items-center justify-center bg-slate-700 rounded-full w-10 h-10 hover:bg-slate-900 transition duration-100 ease-in-out focus:outline-none">
+                  <svg 
+                    xmlns="http://www.w3.org/2000/svg" 
+                    className="h-6 w-6 text-white" 
+                    fill="none" 
+                    viewBox="0 0 24 24" 
+                    stroke="currentColor" 
+                    strokeWidth={2}
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+
+              <img 
+                src={previewImage} 
+                alt="preview"
+                className="w-32 h-32 md:w-64 md:h-64 mx-2"
+                />
+              </div>
+            ))}
+
+        </div>
+        }
+
       </div>
     </div>
   );
