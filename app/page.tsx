@@ -41,9 +41,33 @@ function Home() {
 
   }, [error]);
 
-  function dropHandler(ev: any) {
-    console.log("File(s) dropped");
+ async function dropHandler(ev: any) {
     ev.preventDefault();
+
+    console.log("DROPED", ev.dataTransfer.items);
+    console.log("????", ev.dataTransfer.getData('text/plain'))
+    
+    const url = ev.dataTransfer.getData('text/plain')
+    if ( url ) {
+      try {
+          const resp = await fetch(`${url}`, {method: 'HEAD'});
+          if ( !resp.ok ) {
+            setError("Can't laod the image from your URL !");
+            return;
+          }
+
+          if ( resp.headers.get('content-type') && allowed_types.indexOf(resp.headers.get('content-type')!) === -1 ) {
+            setError("Format must be JPEG or PNG")
+            return;
+          } else {
+            
+          }
+
+      } catch ( error ) {
+        setError("Can't laod the image from your URL !");
+        return;
+      }
+    }
 
     setDropBorder("");
 
@@ -81,7 +105,6 @@ function Home() {
   function handleDragOver(event: any) {
     event.preventDefault();
     setDropBorder("border-4 border-dashed border-white");
-    console.log("DRAG OVER");
   }
 
   function handleDragLeave(event: any) {
@@ -121,31 +144,31 @@ function Home() {
         { previewImages.length > 0 &&
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {previewImages.map( (previewImage, index) => (
-              <div className="bg-white bg-opacity-10 backdrop-blur-lg rounded-lg shadow-lg p-4">
-              <div className="absolute top-0 right-4">
-                <button 
-                  onClick={() => {
-                    removeItem(index);
-                  }}
-                  className="flex items-center justify-center bg-slate-700 rounded-full w-10 h-10 hover:bg-slate-900 transition duration-100 ease-in-out focus:outline-none">
-                  <svg 
-                    xmlns="http://www.w3.org/2000/svg" 
-                    className="h-6 w-6 text-white" 
-                    fill="none" 
-                    viewBox="0 0 24 24" 
-                    stroke="currentColor" 
-                    strokeWidth={2}
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                  </svg>
-                </button>
-              </div>
+              <div className="bg-white bg-opacity-10 backdrop-blur-lg rounded-lg shadow-lg p-4" key={index}>
+                <div className="absolute top-0 right-4">
+                  <button 
+                    onClick={() => {
+                      removeItem(index);
+                    }}
+                    className="flex items-center justify-center bg-slate-700 rounded-full w-10 h-10 hover:bg-slate-900 transition duration-100 ease-in-out focus:outline-none">
+                    <svg 
+                      xmlns="http://www.w3.org/2000/svg" 
+                      className="h-6 w-6 text-white" 
+                      fill="none" 
+                      viewBox="0 0 24 24" 
+                      stroke="currentColor" 
+                      strokeWidth={2}
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
 
-              <img 
-                src={previewImage} 
-                alt="preview"
-                className="w-32 h-32 md:w-64 md:h-64 mx-2"
-                />
+                <img 
+                  src={previewImage} 
+                  alt="preview"
+                  className="w-32 h-32 md:w-64 md:h-64 mx-2"
+                  />
               </div>
             ))}
 
