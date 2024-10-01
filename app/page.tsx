@@ -44,35 +44,39 @@ function Home() {
  async function dropHandler(ev: any) {
     ev.preventDefault();
 
-    console.log("DROPED", ev.dataTransfer.items);
-    console.log("????", ev.dataTransfer.getData('text/plain'))
-    
-    const url = ev.dataTransfer.getData('text/plain')
+    const url = ev.dataTransfer.getData('text/plain');
+
+    const newPreviewImages: string[] = []; 
+
     if ( url ) {
       try {
-          const resp = await fetch(`${url}`, {method: 'HEAD'});
+          const resp = await fetch(`${url}`, {method:'HEAD'});
           if ( !resp.ok ) {
             setError("Can't laod the image from your URL !");
-            return;
           }
 
           if ( resp.headers.get('content-type') && allowed_types.indexOf(resp.headers.get('content-type')!) === -1 ) {
             setError("Format must be JPEG or PNG")
-            return;
           } else {
+            const respBoob = await fetch(`${url}`);
+            if ( respBoob.ok ) {
+              const blob = await respBoob.blob();
+              if (blob) {
+                newPreviewImages.push(URL.createObjectURL(blob));
+              }
+            } else {
+              setError("Can't laod the image from your URL !");
+            }
             
           }
 
       } catch ( error ) {
         setError("Can't laod the image from your URL !");
-        return;
-      }
+      } 
     }
 
     setDropBorder("");
-
-    const newPreviewImages: string[] = []; 
-
+  
     if (ev.dataTransfer.items) {
       for (const item of ev.dataTransfer.items) {
         if (item.kind === 'file') {
@@ -136,7 +140,26 @@ function Home() {
                         text-center h-96`}>
 
         {
-          previewImages.length <= 0 && <p className="text-5xl font-extrabold leading-tight text-black">Drop your images</p>
+          previewImages.length <= 0 && 
+            <div>
+              <p className="text-5xl font-extrabold leading-tight text-black">Drop your <span className="text-green-300">Images</span> or <span className="text-green-300">URL</span></p>
+              {/* <div className="text-2xl font-extrabold leading-tight text-black mt-4 mb-4">OR</div>
+              <div className="mt-3">
+                <input type="file" className="
+                shadow-lg
+                text-4xl font-extrabold leading-tight text-black
+                text-gray-900 bg-gradient-to-r
+                from-purple-500 to-fushia-500 
+                border border-[3px] border-black
+                hover:bg-gradient-to-bl focus:ring-4 
+                focus:outline-none 
+                font-medium rounded-lg 
+                px-5 py-2.5 
+                text-center 
+                me-2 mb-2"
+                multiple></input>
+              </div> */}
+            </div>
         }
         
 
