@@ -1,6 +1,7 @@
 
 "use client";
 
+import { motion } from "framer-motion";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Bounce, toast, ToastContainer } from 'react-toastify';
@@ -16,6 +17,8 @@ function Home() {
   const [previewImages, setPreviewImages] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null); 
   const [focus, setFocus] = useState<number>(previewImages.length -1);
+
+  const [loadingRemoveBg, setLoadingRemoveBg] = useState<boolean>(false);
 
   useEffect(() => {
 
@@ -132,6 +135,11 @@ function Home() {
     });
   }
 
+
+  function handleRemoveBg(event:any) {
+      setLoadingRemoveBg(true);
+  }
+
   return (
 
     <div className={`h-screen flex justify-center items-center ${dropBorder} relative `}
@@ -141,7 +149,7 @@ function Home() {
       onDragEnd={ev => {
         alert("end")
       }}>
-          
+    
       <ToastContainer />
       <div className={`flex items-center justify-center p-6 rounded 
                         text-center h-96`}>
@@ -179,7 +187,7 @@ function Home() {
                 {
                   previewImages.map( (previewImage, index) => {
                     return (
-                      <div key={index} className="cursor-pointer relative" onClick={ e => {
+                      <div key={index} className="cursor-pointer relative shadow-lg" onClick={ e => {
                         setFocus(index);
                       }}>
                         <div className={`absolute ${index===focus ? "bg-transparent": "bg-black/60"} h-full w-full rounded-xl`}>
@@ -200,9 +208,14 @@ function Home() {
             {previewImages.map( (previewImage, index:number) => (
               <> 
               { focus === index && (
-                <div className="bg-white bg-opacity-10 backdrop-blur-lg rounded-lg shadow-lg p-4" key={index} 
+                <div className="bg-white bg-opacity-10 backdrop-blur-lg rounded-lg shadow-lg p-4 relative" key={index} 
                 onMouseOver={ ev => {
                 }}>
+
+
+                        
+
+
                   <div className="absolute top-0 right-4">
                     <button 
                       onClick={() => {
@@ -231,7 +244,15 @@ function Home() {
               )}
               </>
             ))}
-
+            <div className="my-4 px-4">
+              <button 
+                onClick={handleRemoveBg}
+                className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-2xl font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800">
+                <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                  Remove Background
+                </span>
+              </button>
+            </div>
         </div>
         }
 
