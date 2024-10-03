@@ -43,9 +43,6 @@ function Home() {
 
  async function dropHandler(ev: any) {
     ev.preventDefault();
-
-    console.log("DROPED", ev.dataTransfer.items);
-    console.log("????", ev.dataTransfer.getData('text/plain'))
     
     const url = ev.dataTransfer.getData('text/plain')
     if ( url ) {
@@ -80,8 +77,6 @@ function Home() {
             setError("Format must be JPEG or PNG")
           } else {
             const file = item.getAsFile();
-            console.log("file : ", file);
-
             if (file) {
               newPreviewImages.push(URL.createObjectURL(file));
             }
@@ -104,7 +99,7 @@ function Home() {
 
   function handleDragOver(event: any) {
     event.preventDefault();
-    setDropBorder("border-4 border-dashed border-white");
+    setDropBorder("border-[0.5em] border-dashed border-slate-900");
   }
 
   function handleDragLeave(event: any) {
@@ -126,11 +121,11 @@ function Home() {
 
   return (
 
-    <div className={`h-screen bg-gradient-to-r from-fuchsia-500 to-cyan-500 flex justify-center items-center ${dropBorder}`}
+    <div className={`h-screen bg-gradient-to-r from-fuchsia-500 to-cyan-500 flex justify-center items-center ${dropBorder} relative `}
       onDrop={dropHandler}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}>
-
+          
       <ToastContainer />
       <div className={`flex items-center justify-center p-6 rounded 
                         text-center h-96`}>
@@ -139,7 +134,6 @@ function Home() {
           previewImages.length <= 0 && <p className="text-5xl font-extrabold leading-tight text-black">Drop your images</p>
         }
         
-
         
         { previewImages.length > 0 &&
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -176,6 +170,7 @@ function Home() {
         }
 
       </div>
+
     </div>
   );
 
