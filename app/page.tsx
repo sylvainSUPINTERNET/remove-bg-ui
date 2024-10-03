@@ -15,6 +15,7 @@ function Home() {
   const [dropBorder, setDropBorder]= useState<string>("");
   const [previewImages, setPreviewImages] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null); 
+  const [focus, setFocus] = useState<number>(previewImages.length -1);
 
   useEffect(() => {
 
@@ -32,8 +33,10 @@ function Home() {
       });
     }
 
+
     return () => {
       // on unmount
+    
       if (previewImages.length > 0) {
         previewImages.forEach( previewImages => URL.revokeObjectURL(previewImages));
       }
@@ -99,6 +102,8 @@ function Home() {
         setError(`Maximum ${MAX_FILES} reached`);
         return prevImages;
       }
+
+      setFocus(prevImages.length + newPreviewImages.length -1);
       return [...prevImages, ...newPreviewImages]
     });
 
@@ -106,7 +111,7 @@ function Home() {
 
   function handleDragOver(event: any) {
     event.preventDefault();
-    setDropBorder("border-[0.5em] border-dashed border-slate-900");
+    setDropBorder("border-[0.4em] border-dashed border-black");
   }
 
   function handleDragLeave(event: any) {
@@ -122,16 +127,20 @@ function Home() {
     setPreviewImages((prevImages) => {
       const newImages = [...prevImages];
       newImages.splice(index, 1);
+      setFocus(newImages.length -1);
       return newImages;
     });
   }
 
   return (
 
-    <div className={`h-screen bg-gradient-to-r from-fuchsia-500 to-cyan-500 flex justify-center items-center ${dropBorder} relative `}
+    <div className={`h-screen flex justify-center items-center ${dropBorder} relative `}
       onDrop={dropHandler}
       onDragOver={handleDragOver}
-      onDragLeave={handleDragLeave}>
+      onDragLeave={handleDragLeave}
+      onDragEnd={ev => {
+        alert("end")
+      }}>
           
       <ToastContainer />
       <div className={`flex items-center justify-center p-6 rounded 
@@ -140,7 +149,7 @@ function Home() {
         {
           previewImages.length <= 0 && 
             <div>
-              <p className="text-5xl font-extrabold leading-tight text-black">Drop your <span className="text-green-300">Images</span> or <span className="text-green-300">URL</span></p>
+              <p className="text-5xl font-extrabold leading-tight text-black">Drop your <span className="text-green-300">Images</span> or <span className="text-green-300">Image URL</span></p>
               {/* <div className="text-2xl font-extrabold leading-tight text-black mt-4 mb-4">OR</div>
               <div className="mt-3">
                 <input type="file" className="
@@ -161,35 +170,66 @@ function Home() {
         }
         
         
-        { previewImages.length > 0 &&
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {previewImages.map( (previewImage, index) => (
-              <div className="bg-white bg-opacity-10 backdrop-blur-lg rounded-lg shadow-lg p-4" key={index}>
-                <div className="absolute top-0 right-4">
-                  <button 
-                    onClick={() => {
-                      removeItem(index);
-                    }}
-                    className="flex items-center justify-center bg-slate-700 rounded-full w-10 h-10 hover:bg-slate-900 transition duration-100 ease-in-out focus:outline-none">
-                    <svg 
-                      xmlns="http://www.w3.org/2000/svg" 
-                      className="h-6 w-6 text-white" 
-                      fill="none" 
-                      viewBox="0 0 24 24" 
-                      stroke="currentColor" 
-                      strokeWidth={2}
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                </div>
 
-                <img 
-                  src={previewImage} 
-                  alt="preview"
-                  className="w-32 h-32 md:w-64 md:h-64 mx-2"
-                  />
-              </div>
+        <div className="absolute h-24 top-2 rounded p-2 w-full md:w-3/4">
+          <div className="flex justify-center md:gap-4 space-x-2">
+              {
+                previewImages.length > 0 && 
+                <>
+                {
+                  previewImages.map( (previewImage, index) => {
+                    return (
+                      <div key={index} className="cursor-pointer relative" onClick={ e => {
+                        setFocus(index);
+                      }}>
+                        <div className={`absolute ${index===focus ? "bg-transparent": "bg-black/60"} h-full w-full rounded-xl`}>
+                        </div>
+                        <img src={previewImage} alt="google" className="w-24 h-24 rounded-xl"/>
+                      </div>
+                    )
+                  })
+                }
+                </>
+                
+              }
+          </div>
+        </div>
+        
+        { previewImages.length > 0 &&
+        <div className="flex justify-center ">
+            {previewImages.map( (previewImage, index:number) => (
+              <> 
+              { focus === index && (
+                <div className="bg-white bg-opacity-10 backdrop-blur-lg rounded-lg shadow-lg p-4" key={index} 
+                onMouseOver={ ev => {
+                }}>
+                  <div className="absolute top-0 right-4">
+                    <button 
+                      onClick={() => {
+                        removeItem(index);
+                      }}
+                      className="flex items-center justify-center bg-slate-700 rounded-full w-10 h-10 hover:bg-slate-900 transition duration-100 ease-in-out focus:outline-none">
+                      <svg 
+                        xmlns="http://www.w3.org/2000/svg" 
+                        className="h-6 w-6 text-white" 
+                        fill="none" 
+                        viewBox="0 0 24 24" 
+                        stroke="currentColor" 
+                        strokeWidth={2}
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                      </svg>
+                    </button>
+                  </div>
+  
+                  <img 
+                    src={previewImage} 
+                    alt="preview"
+                    className="w-96 h-96 mx-2"
+                    />
+                </div>
+              )}
+              </>
             ))}
 
         </div>
