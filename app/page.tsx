@@ -1,8 +1,6 @@
 
 "use client";
 
-import { motion } from "framer-motion";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Bounce, toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -137,7 +135,20 @@ function Home() {
 
 
   function handleRemoveBg(event:any) {
-      setLoadingRemoveBg(true);
+    setLoadingRemoveBg(true);
+
+
+    // TODO :
+    // Probleme les images sur la taille 
+    // bouton "remove backgroudn" trop grand 
+    // trop grand "le close"
+    
+    // true => can't change focus 
+    // hide the "remove"
+    // disable button 
+    // show loader indicator
+
+  
   }
 
   return (
@@ -157,7 +168,7 @@ function Home() {
         {
           previewImages.length <= 0 && 
             <div>
-              <p className="text-5xl font-extrabold leading-tight text-black">Drop your <span className="text-green-300">Images</span> or <span className="text-green-300">Image URL</span></p>
+              <p className="text-5xl font-extrabold leading-tight text-black">Drop your <span className="text-emerald-400">Images</span> or <span className="text-cyan-500">Image URL</span></p>
               {/* <div className="text-2xl font-extrabold leading-tight text-black mt-4 mb-4">OR</div>
               <div className="mt-3">
                 <input type="file" className="
@@ -179,7 +190,7 @@ function Home() {
         
         
 
-        <div className="absolute h-24 top-2 rounded p-2 w-full md:w-3/4">
+        <div className="absolute h-24 top-2 rounded p-2= w-full md:w-3/4">
           <div className="flex justify-center md:gap-4 space-x-2">
               {
                 previewImages.length > 0 && 
@@ -192,7 +203,7 @@ function Home() {
                       }}>
                         <div className={`absolute ${index===focus ? "bg-transparent": "bg-black/60"} h-full w-full rounded-xl`}>
                         </div>
-                        <img src={previewImage} alt="google" className="w-24 h-24 rounded-xl"/>
+                        <img src={previewImage} alt="google" className="w-24 h-24 object-cover rounded-xl"/>
                       </div>
                     )
                   })
@@ -203,58 +214,66 @@ function Home() {
           </div>
         </div>
         
-        { previewImages.length > 0 &&
-        <div className="flex justify-center ">
-            {previewImages.map( (previewImage, index:number) => (
-              <> 
-              { focus === index && (
-                <div className="bg-white bg-opacity-10 backdrop-blur-lg rounded-lg shadow-lg p-4 relative" key={index} 
-                onMouseOver={ ev => {
-                }}>
+        { 
+          previewImages.length > 0 &&
+          <div className="">
+              {previewImages.map( (previewImage, index:number) => (
+                <> 
+                { focus === index && (
+                  <div className="bg-white bg-opacity-10 backdrop-blur-lg rounded-lg shadow-lg p-4 relative" key={index} >
+                    <div className="absolute top-0 right-4">
+                      <button 
+                        onClick={() => {
+                          removeItem(index);
+                        }}
+                        className="flex items-center justify-center bg-slate-700 rounded-full w-10 h-10 hover:bg-slate-900 transition duration-100 ease-in-out focus:outline-none">
+                        <svg 
+                          xmlns="http://www.w3.org/2000/svg" 
+                          className="h-6 w-6 text-white" 
+                          fill="none" 
+                          viewBox="0 0 24 24" 
+                          stroke="currentColor" 
+                          strokeWidth={2}
+                        >
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
 
-
-                        
-
-
-                  <div className="absolute top-0 right-4">
-                    <button 
-                      onClick={() => {
-                        removeItem(index);
-                      }}
-                      className="flex items-center justify-center bg-slate-700 rounded-full w-10 h-10 hover:bg-slate-900 transition duration-100 ease-in-out focus:outline-none">
-                      <svg 
-                        xmlns="http://www.w3.org/2000/svg" 
-                        className="h-6 w-6 text-white" 
-                        fill="none" 
-                        viewBox="0 0 24 24" 
-                        stroke="currentColor" 
-                        strokeWidth={2}
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                      </button>
+                    </div>
+                    
+                    {
+                      loadingRemoveBg === true ? 
+                                          
+                      <div role="status" className="flex items-center justify-center h-56 max-w-sm bg-gray-300 rounded-lg animate-pulse dark:bg-gray-700">
+                      <svg className="w-10 h-10 text-gray-200 dark:text-gray-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 20">
+                        <path d="M5 5V.13a2.96 2.96 0 0 0-1.293.749L.879 3.707A2.98 2.98 0 0 0 .13 5H5Z"/>
+                        <path d="M14.066 0H7v5a2 2 0 0 1-2 2H0v11a1.97 1.97 0 0 0 1.934 2h12.132A1.97 1.97 0 0 0 16 18V2a1.97 1.97 0 0 0-1.934-2ZM9 13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2Zm4 .382a1 1 0 0 1-1.447.894L10 13v-2l1.553-1.276a1 1 0 0 1 1.447.894v2.764Z"/>
                       </svg>
-                    </button>
+                      <span className="sr-only">Loading...</span>
+                      </div>  :  <img src={previewImage} alt="preview" className="w-full h-auto object-cover"/> 
+
+                    }
+
+
                   </div>
-  
-                  <img 
-                    src={previewImage} 
-                    alt="preview"
-                    className="w-96 h-96 mx-2"
-                    />
-                </div>
-              )}
-              </>
-            ))}
-            <div className="my-4 px-4">
-              <button 
-                onClick={handleRemoveBg}
-                className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-2xl font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-cyan-200 dark:focus:ring-cyan-800">
-                <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
-                  Remove Background
-                </span>
-              </button>
-            </div>
-        </div>
+                )}
+                </>
+              ))}
+              
+              <div className="my-4 px-4">
+                <button 
+                  onClick={handleRemoveBg}
+                  className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-2xl font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white dark:text-white  focus:outline-none  dark:focus:ring-cyan-800">
+                  <span 
+                    className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                      Remove Background 
+                  </span>
+                </button>
+              </div>
+          </div>
         }
+
+      
 
       </div>
 
