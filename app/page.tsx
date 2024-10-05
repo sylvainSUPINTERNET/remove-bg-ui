@@ -16,7 +16,7 @@ function Home() {
   const [error, setError] = useState<string | null>(null); 
   const [focus, setFocus] = useState<number>(previewImages.length -1);
 
-  const [loadingRemoveBg, setLoadingRemoveBg] = useState<boolean>(false);
+  const [loadingRemoveBg, setLoadingRemoveBg ] = useState<boolean>(false);
 
   useEffect(() => {
 
@@ -104,7 +104,9 @@ function Home() {
         return prevImages;
       }
 
-      setFocus(prevImages.length + newPreviewImages.length -1);
+      if ( loadingRemoveBg !== true ) {
+        setFocus(prevImages.length + newPreviewImages.length -1);
+      }
       return [...prevImages, ...newPreviewImages]
     });
 
@@ -138,6 +140,10 @@ function Home() {
     setLoadingRemoveBg(true);
 
 
+    setTimeout( () => {
+      setLoadingRemoveBg(false);
+    }, 6000) 
+
     // TODO :
     // Probleme les images sur la taille 
     // bouton "remove backgroudn" trop grand 
@@ -156,13 +162,10 @@ function Home() {
     <div className={`h-screen flex justify-center items-center ${dropBorder} relative `}
       onDrop={dropHandler}
       onDragOver={handleDragOver}
-      onDragLeave={handleDragLeave}
-      onDragEnd={ev => {
-        alert("end")
-      }}>
+      onDragLeave={handleDragLeave}>
     
       <ToastContainer />
-      <div className={`flex items-center justify-center p-6 rounded 
+      <div className={`flex items-center justify-center  rounded 
                         text-center h-96`}>
 
         {
@@ -190,7 +193,7 @@ function Home() {
         
         
 
-        <div className="absolute h-24 top-2 rounded p-2= w-full md:w-3/4">
+        <div className="absolute h-24 top-2 rounded w-full md:w-3/4">
           <div className="flex justify-center md:gap-4 space-x-2">
               {
                 previewImages.length > 0 && 
@@ -198,8 +201,10 @@ function Home() {
                 {
                   previewImages.map( (previewImage, index) => {
                     return (
-                      <div key={index} className="cursor-pointer relative shadow-lg" onClick={ e => {
-                        setFocus(index);
+                      <div key={index} className={`${loadingRemoveBg !== true ? "cursor-pointer" : "cursor-not-allowed"} relative shadow-lg`} onClick={ e => {
+                        if ( loadingRemoveBg !== true ) {
+                          setFocus(index);
+                        }
                       }}>
                         <div className={`absolute ${index===focus ? "bg-transparent": "bg-black/60"} h-full w-full rounded-xl`}>
                         </div>
@@ -220,38 +225,43 @@ function Home() {
               {previewImages.map( (previewImage, index:number) => (
                 <> 
                 { focus === index && (
-                  <div className="bg-white bg-opacity-10 backdrop-blur-lg rounded-lg shadow-lg p-4 relative" key={index} >
+                  <div className="p-4 relative" key={index} >
                     <div className="absolute top-0 right-4">
-                      <button 
+
+                      {
+                        loadingRemoveBg !== true && 
+                        <button 
                         onClick={() => {
                           removeItem(index);
                         }}
                         className="flex items-center justify-center bg-slate-700 rounded-full w-10 h-10 hover:bg-slate-900 transition duration-100 ease-in-out focus:outline-none">
-                        <svg 
-                          xmlns="http://www.w3.org/2000/svg" 
-                          className="h-6 w-6 text-white" 
-                          fill="none" 
-                          viewBox="0 0 24 24" 
-                          stroke="currentColor" 
-                          strokeWidth={2}
-                        >
-                          <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                        </svg>
+                          <svg 
+                            xmlns="http://www.w3.org/2000/svg" 
+                            className="h-6 w-6 text-white" 
+                            fill="none" 
+                            viewBox="0 0 24 24" 
+                            stroke="currentColor" 
+                            strokeWidth={2}
+                          >
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+           
+                      }
 
-                      </button>
+
                     </div>
                     
                     {
                       loadingRemoveBg === true ? 
                                           
-                      <div role="status" className="flex items-center justify-center h-56 max-w-sm bg-gray-300 rounded-lg animate-pulse dark:bg-gray-700">
-                      <svg className="w-10 h-10 text-gray-200 dark:text-gray-600" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 20">
+                      <div role="status" className="flex items-center justify-center h-96 w-96 max-w-sm bg-gray-100 rounded-lg animate-pulse dark:bg-gray-300">
+                      <svg className="w-10 h-10 text-gray-200 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 20">
                         <path d="M5 5V.13a2.96 2.96 0 0 0-1.293.749L.879 3.707A2.98 2.98 0 0 0 .13 5H5Z"/>
                         <path d="M14.066 0H7v5a2 2 0 0 1-2 2H0v11a1.97 1.97 0 0 0 1.934 2h12.132A1.97 1.97 0 0 0 16 18V2a1.97 1.97 0 0 0-1.934-2ZM9 13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2Zm4 .382a1 1 0 0 1-1.447.894L10 13v-2l1.553-1.276a1 1 0 0 1 1.447.894v2.764Z"/>
                       </svg>
                       <span className="sr-only">Loading...</span>
-                      </div>  :  <img src={previewImage} alt="preview" className="w-full h-auto object-cover"/> 
-
+                      </div>  :  <img src={previewImage} alt="preview" className="w-96 h-96 object-cover rounded-lg"/> 
                     }
 
 
