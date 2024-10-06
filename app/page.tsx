@@ -14,9 +14,9 @@ function Home() {
 
   const [dropBorder, setDropBorder]= useState<string>("");
   const [previewImages, setPreviewImages] = useState<string[]>([]);
+  const [previewBlob, setPreviewBlob] = useState<Blob[]>([]);
   const [error, setError] = useState<string | null>(null); 
   const [focus, setFocus] = useState<number>(previewImages.length -1);
-
   const [loadingRemoveBg, setLoadingRemoveBg ] = useState<boolean>(false);
 
   useEffect(() => {
@@ -52,7 +52,7 @@ function Home() {
     const url = ev.dataTransfer.getData('text/plain');
 
     const newPreviewImages: string[] = []; 
-
+    const newPreviewImagesBlob: Blob[] = [];
     if ( url ) {
       try {
           const resp = await fetch(`${url}`, {method:'HEAD'});
@@ -68,6 +68,7 @@ function Home() {
               const blob = await respBoob.blob();
               if (blob) {
                 newPreviewImages.push(URL.createObjectURL(blob));
+                newPreviewImagesBlob.push(blob);
               }
             } else {
               setError("Can't laod the image from your URL !");
@@ -91,6 +92,7 @@ function Home() {
             const file = item.getAsFile();
             if (file) {
               newPreviewImages.push(URL.createObjectURL(file));
+              newPreviewImagesBlob.push(file);
             }
           }
         }
@@ -109,6 +111,10 @@ function Home() {
         setFocus(prevImages.length + newPreviewImages.length -1);
       }
       return [...prevImages, ...newPreviewImages]
+    });
+
+    setPreviewBlob((prevBlob) => {
+      return [...prevBlob, ...newPreviewImagesBlob]
     });
 
   }
@@ -131,20 +137,49 @@ function Home() {
     setPreviewImages((prevImages) => {
       const newImages = [...prevImages];
       newImages.splice(index, 1);
+
       setFocus(newImages.length -1);
       return newImages;
+    });
+
+    setPreviewBlob((prevBlob) => {
+      const newBlob = [...prevBlob];
+      newBlob.splice(index, 1);
+      return newBlob
     });
   }
 
 
   async function handleRemoveBg(event:any) {
+    if ( loadingRemoveBg ) {
+      return
+    }
     setLoadingRemoveBg(true);
 
+    let formData = new FormData();
+    console.log("preview", previewImages);
+    console.log("preview blob", previewBlob);
+    const file: File = new File([previewBlob[focus]], "image.png", {type: "image/png"});
+    formData.append('file', file);
+
     try {
-      const resp = await fetch('https://via.assets.so/img.jpg?w=400&h=150&tc=blue&bg=#cecece');
-      const data = await resp.json();
+      const resp = await fetch(process.env.NEXT_PUBLIC_API_URL as string, {
+        method: 'POST',
+        body: formData
+      });
+      if ( resp.status === 200 ) {
+        const data = await resp.blob();
+        const imageUrl = URL.createObjectURL(data);
+        setPreviewImages((prevImages) => {
+          setLoadingRemoveBg(false);
+          const newImages = [...prevImages];
+          newImages[focus] = imageUrl;
+          return newImages;
+        });
+      }
 
     } catch ( e ) {
+      setLoadingRemoveBg(false);
       setError("Error while removing the background");
     }
     
