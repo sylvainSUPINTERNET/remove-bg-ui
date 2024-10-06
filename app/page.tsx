@@ -137,13 +137,22 @@ function Home() {
   }
 
 
-  function handleRemoveBg(event:any) {
+  async function handleRemoveBg(event:any) {
     setLoadingRemoveBg(true);
 
+    try {
+      const resp = await fetch('https://via.assets.so/img.jpg?w=400&h=150&tc=blue&bg=#cecece');
+      const data = await resp.json();
 
-    setTimeout( () => {
-      setLoadingRemoveBg(false);
-    }, 6000) 
+    } catch ( e ) {
+      setError("Error while removing the background");
+    }
+    
+
+
+    // setTimeout( () => {
+    //   setLoadingRemoveBg(false);
+    // }, 6000) 
 
     // TODO :
     // Probleme les images sur la taille 
@@ -296,9 +305,9 @@ function Home() {
                       :  
                         <div className="relative">
                           <motion.div
-                            className="absolute h-full w-12 bg-red-900 backdrop-filter backdrop-blur-lg bg-opacity-10 shadow-lg"
+                            className="absolute h-full w-32 bg-red-900 backdrop-filter backdrop-blur-lg bg-opacity-10 shadow-lg border-l-2 border-r-2 border-black"
                             animate={{
-                              x: [20, 300, 20]
+                              x: [20, 190, 20]
                             }}
                             transition={{
                               duration:6, 
