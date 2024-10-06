@@ -18,6 +18,7 @@ function Home() {
   const [error, setError] = useState<string | null>(null); 
   const [focus, setFocus] = useState<number>(previewImages.length -1);
   const [loadingRemoveBg, setLoadingRemoveBg ] = useState<boolean>(false);
+  const [downloable, setDownloable] = useState<number[]>([]);
 
   useEffect(() => {
 
@@ -147,6 +148,13 @@ function Home() {
       newBlob.splice(index, 1);
       return newBlob
     });
+
+    setDownloable(
+      (prevDownloable) => {
+        const newDownloable = [...prevDownloable];
+        newDownloable.splice(index, 1);
+        return newDownloable;
+      });
   }
 
 
@@ -155,18 +163,16 @@ function Home() {
       return
     }
     setLoadingRemoveBg(true);
-
-    let formData = new FormData();
-    console.log("preview", previewImages);
-    console.log("preview blob", previewBlob);
-    const file: File = new File([previewBlob[focus]], "image.png", {type: "image/png"});
-    formData.append('file', file);
-
     try {
-      const resp = await fetch(process.env.NEXT_PUBLIC_API_URL as string, {
-        method: 'POST',
-        body: formData
+      let formData = new FormData();
+      let detail = previewBlob[focus]
+      const file: File = new File([previewBlob[focus]], `base_image.${detail.type.split("/")[1]}`, {type: detail.type});
+      formData.append('file', file);
+        const resp = await fetch(process.env.NEXT_PUBLIC_API_URL as string, {
+          method: 'POST',
+          body: formData
       });
+
       if ( resp.status === 200 ) {
         const data = await resp.blob();
         const imageUrl = URL.createObjectURL(data);
@@ -176,30 +182,25 @@ function Home() {
           newImages[focus] = imageUrl;
           return newImages;
         });
+
+        setDownloable(
+          (prevDownloable) => {
+            const newDownloable = [...prevDownloable];
+            newDownloable.push(focus);
+            return newDownloable;
+          }
+        );
       }
 
     } catch ( e ) {
       setLoadingRemoveBg(false);
       setError("Error while removing the background");
     }
-    
-
-
-    // setTimeout( () => {
-    //   setLoadingRemoveBg(false);
-    // }, 6000) 
-
-    // TODO :
-    // Probleme les images sur la taille 
-    // bouton "remove backgroudn" trop grand 
-    // trop grand "le close"
-    
-    // true => can't change focus 
-    // hide the "remove"
-    // disable button 
-    // show loader indicator
-
   
+  }
+
+  async function handleDownload(event:any) {
+    alert("TODO : download HD ( convert to webp )")
   }
 
   return (
@@ -368,7 +369,33 @@ function Home() {
               
               <div className="my-4 px-4 flex justify-center">
               {
+                    downloable[focus] !== undefined && (
+                      <div
+                      onClick={handleDownload}
+                      className={`cursor-pointer p-4 font-bold text-2xl leading-9 flex items-center`}
+                      >
+                      <svg
+                        className={`h-5 w-5 mr-3 text-blue-500`}
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M4 4v16h16V4H4zm4 8l4 4 4-4m-4-4v8"
+                        />
+                      </svg>
+                        Remove Background
+                      </div>
+                    )
+              }
+              
+              {
 
+                downloable[focus] === undefined && (
                   <div
                     onClick={handleRemoveBg}
                     className={`${loadingRemoveBg === false ? "cursor-pointer": "cursor-progress"} p-4 font-bold text-2xl leading-9 flex items-center`}
@@ -390,41 +417,9 @@ function Home() {
                     </svg>
                     Remove Background
                   </div>
-
-           
-              // <button
-              //   onClick={handleRemoveBg}
-              //   className={`relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-2xl font-medium rounded-lg group focus:outline-none transition-all ease-in duration-150 transform-gpu
-              //     ${loadingRemoveBg ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white dark:text-white'}
-              //   `}
-              //   disabled={loadingRemoveBg}
-              //   style={{ transform: loadingRemoveBg ? 'scale(0.95)' : 'scale(1)' }} // Slight scale effect on click
-              // >
-              //   <span className={`relative flex items-center px-10 py-2.5 transition-all ease-in duration-75 rounded-md font-bold
-              //     ${loadingRemoveBg ? 'bg-gray-100 dark:bg-gray-700' : 'bg-white dark:bg-gray-900 group-hover:bg-opacity-0'}
-              //   `}>
-              //     {/* If loading, show the spinner */}
-              //     {loadingRemoveBg ? (
-              //       <>
-              //         <svg className="animate-spin h-5 w-5 mr-3 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              //           <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-              //           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="4" d="M4 12a8 8 0 018-8v8z"></path>
-              //         </svg>
-              //         Processing...
-              //       </>
-              //     ) : (
-              //       <>
-              //         <svg className="h-5 w-5 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              //           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12H9m6 0a3 3 0 00-3-3m0 0a3 3 0 00-3 3m3 3a3 3 0 003-3m0 3a3 3 0 01-3 3m-3 0a3 3 0 003-3" />
-              //         </svg>
-              //         Remove Background
-              //       </>
-              //     )}
-              //   </span>
-              // </button>
-
-
+                  )
               }
+
               </div>
           </div>
         }
