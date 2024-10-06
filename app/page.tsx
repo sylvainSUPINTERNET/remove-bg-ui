@@ -298,12 +298,12 @@ function Home() {
                           <motion.div
                             className="absolute h-full w-12 bg-red-900 backdrop-filter backdrop-blur-lg bg-opacity-10 shadow-lg"
                             animate={{
-                              x: [20, 300, 20] // 384 (largeur de l'image) - 48 (largeur du div) = 336px
+                              x: [20, 300, 20]
                             }}
                             transition={{
-                              duration:6, // Durée de l'animation
-                              ease: "easeInOut", // Effet de transition
-                              repeat: Infinity, // Répétition infinie
+                              duration:6, 
+                              ease: "easeInOut", 
+                              repeat: Infinity, 
                             }}
                           >
                           </motion.div>
