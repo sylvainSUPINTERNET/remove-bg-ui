@@ -191,25 +191,16 @@ function Home() {
 
         {
           previewImages.length <= 0 && 
-            <div>
+            <motion.div
+            initial="hidden"
+            animate="visible"
+            transition={{ duration: 1, ease: "easeOut" }}
+            variants={{
+              hidden: { opacity: 0, y: 60 },
+              visible: { opacity: 1, y: 0 }
+            }}>
               <p className="text-5xl font-extrabold leading-tight text-black">Drop your <span className="text-emerald-400">Images</span> or <span className="text-cyan-500">Image URL</span></p>
-              {/* <div className="text-2xl font-extrabold leading-tight text-black mt-4 mb-4">OR</div>
-              <div className="mt-3">
-                <input type="file" className="
-                shadow-lg
-                text-4xl font-extrabold leading-tight text-black
-                text-gray-900 bg-gradient-to-r
-                from-purple-500 to-fushia-500 
-                border border-[3px] border-black
-                hover:bg-gradient-to-bl focus:ring-4 
-                focus:outline-none 
-                font-medium rounded-lg 
-                px-5 py-2.5 
-                text-center 
-                me-2 mb-2"
-                multiple></input>
-              </div> */}
-            </div>
+            </motion.div>
         }
         
         
@@ -234,10 +225,10 @@ function Home() {
                           onClick={() => {
                             removeItem(index);
                           }}
-                          className="flex items-center justify-center bg-red-900 rounded-full w-10 h-10 hover:bg-red-700 transition duration-100 ease-in-out focus:outline-none">
+                          className="flex items-center justify-center bg-red-900 rounded-full w-8 h-8 hover:bg-red-700 transition duration-100 ease-in-out focus:outline-none">
                             <svg 
                               xmlns="http://www.w3.org/2000/svg" 
-                              className="h-6 w-6 text-white" 
+                              className="h-4 w-4 text-white" 
                               fill="none" 
                               viewBox="0 0 24 24" 
                               stroke="currentColor" 
@@ -294,37 +285,35 @@ function Home() {
                     </div>
                     
                     {
-                      loadingRemoveBg === true ? 
-                                          
-                      // <div role="status" className="flex items-center justify-center h-96 w-96 max-w-sm bg-gray-100 rounded-lg animate-pulse dark:bg-gray-300">
-                      // <svg className="w-10 h-10 text-gray-200 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 16 20">
-                      //   <path d="M5 5V.13a2.96 2.96 0 0 0-1.293.749L.879 3.707A2.98 2.98 0 0 0 .13 5H5Z"/>
-                      //   <path d="M14.066 0H7v5a2 2 0 0 1-2 2H0v11a1.97 1.97 0 0 0 1.934 2h12.132A1.97 1.97 0 0 0 16 18V2a1.97 1.97 0 0 0-1.934-2ZM9 13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2Zm4 .382a1 1 0 0 1-1.447.894L10 13v-2l1.553-1.276a1 1 0 0 1 1.447.894v2.764Z"/>
-                      // </svg>
-                      // <span className="sr-only">Loading...</span>
-                      // </div>  
-                      <div className="text-center rtl:text-center">
-                        <div role="status">
-                            <svg aria-hidden="true" className="inline w-24 h-24 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
-                                <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
-                            </svg>
-                            <span className="sr-only">Loading...</span>
-                        </div>
+                      loadingRemoveBg !== true ? 
+                      <div className="relative">
+                        <img
+                          src={previewImage}
+                          alt="preview"
+                          className="w-96 h-96 object-cover rounded-lg shadow-lg "
+                        />
                       </div>
                       :  
-                      <div className="relative">
-                        <div className="text-center rtl:text-center absolute top-[50%] left-[50%]">
-                          <div role="status">
-                              <svg aria-hidden="true" className="inline w-24 h-24 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                  <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
-                                  <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
-                              </svg>
-                              <span className="sr-only">Loading...</span>
-                          </div>
+                        <div className="relative">
+                          <motion.div
+                            className="absolute h-full w-12 bg-red-900 backdrop-filter backdrop-blur-lg bg-opacity-10 shadow-lg"
+                            animate={{
+                              x: [20, 300, 20] // 384 (largeur de l'image) - 48 (largeur du div) = 336px
+                            }}
+                            transition={{
+                              duration:6, // Durée de l'animation
+                              ease: "easeInOut", // Effet de transition
+                              repeat: Infinity, // Répétition infinie
+                            }}
+                          >
+                          </motion.div>
+                          <img
+                            src={previewImage}
+                            alt="preview"
+                            className="w-96 h-96 object-cover rounded-lg shadow-lg 
+                                    shadow-[0_0_50px_20px_rgba(255,0,0,0.5)]"
+                          />
                         </div>
-                        <img src={previewImage} alt="preview" className="w-96 h-96 object-cover rounded-lg"/> 
-                      </div>
                     }
 
 
@@ -333,45 +322,64 @@ function Home() {
                 </>
               ))}
               
-              <div className="my-4 px-4">
+              <div className="my-4 px-4 flex justify-center">
               {
-                loadingRemoveBg !== true ? (
-                  <button
-                    onClick={handleRemoveBg}
-                    className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-2xl font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white dark:text-white focus:outline-none dark:focus:ring-cyan-800"
-                  >
-                    <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
-                      Remove Background
-                    </span>
-                  </button>
-                ) : (
-                  // <motion.div
-                  //   className="bg-gradient-to-br from-cyan-500 to-blue-500 rounded-full h-12 flex items-center justify-center"
-                  //   animate={{
-                  //     scale: [1, 1.2, 1.2, 1, 1],
-                  //     rotate: [0, 360, 360, 0, 0],
-                  //     borderRadius: ["20%", "50%", "50%", "20%"],
-                  //   }}
-                  //   transition={{
-                  //     duration: 1.5,
-                  //     ease: "easeInOut",
-                  //     repeat: Infinity,
-                  //     repeatDelay: 0.5,
-                  //   }}
-                  // >
-                  // </motion.div>
 
-                //   <div className="text-center rtl:text-center">
-                //     <div role="status">
-                //         <svg aria-hidden="true" className="inline w-24 h-24 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
-                //             <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor"/>
-                //             <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill"/>
-                //         </svg>
-                //         <span className="sr-only">Loading...</span>
-                //     </div>
-                // </div>
-                <></>
-                )
+                  <div
+                    onClick={handleRemoveBg}
+                    className={`${loadingRemoveBg === false ? "cursor-pointer": "cursor-progress"} p-4 font-bold text-2xl leading-9 flex items-center`}
+                  >
+                    <svg
+                      className={`h-5 w-5 mr-3 text-blue-500 ${loadingRemoveBg ? 'animate-spin' : ''}`}
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="4"
+                        d="M4 12a8 8 0 018-8v8z"
+                      ></path>
+                    </svg>
+                    Remove Background
+                  </div>
+
+           
+              // <button
+              //   onClick={handleRemoveBg}
+              //   className={`relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-2xl font-medium rounded-lg group focus:outline-none transition-all ease-in duration-150 transform-gpu
+              //     ${loadingRemoveBg ? 'bg-gray-300 text-gray-500 cursor-not-allowed' : 'bg-gradient-to-br from-cyan-500 to-blue-500 group-hover:from-cyan-500 group-hover:to-blue-500 hover:text-white dark:text-white'}
+              //   `}
+              //   disabled={loadingRemoveBg}
+              //   style={{ transform: loadingRemoveBg ? 'scale(0.95)' : 'scale(1)' }} // Slight scale effect on click
+              // >
+              //   <span className={`relative flex items-center px-10 py-2.5 transition-all ease-in duration-75 rounded-md font-bold
+              //     ${loadingRemoveBg ? 'bg-gray-100 dark:bg-gray-700' : 'bg-white dark:bg-gray-900 group-hover:bg-opacity-0'}
+              //   `}>
+              //     {/* If loading, show the spinner */}
+              //     {loadingRemoveBg ? (
+              //       <>
+              //         <svg className="animate-spin h-5 w-5 mr-3 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              //           <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+              //           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="4" d="M4 12a8 8 0 018-8v8z"></path>
+              //         </svg>
+              //         Processing...
+              //       </>
+              //     ) : (
+              //       <>
+              //         <svg className="h-5 w-5 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              //           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12H9m6 0a3 3 0 00-3-3m0 0a3 3 0 00-3 3m3 3a3 3 0 003-3m0 3a3 3 0 01-3 3m-3 0a3 3 0 003-3" />
+              //         </svg>
+              //         Remove Background
+              //       </>
+              //     )}
+              //   </span>
+              // </button>
+
+
               }
               </div>
           </div>
