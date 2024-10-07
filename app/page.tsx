@@ -199,8 +199,8 @@ function Home() {
   
   }
 
-  async function handleDownload(event:any) {
-    alert("TODO : download HD ( convert to webp )")
+  async function handleDownload(event:any, format:"png"|"webp") {
+    alert("download as " + format);
   }
 
   return (
@@ -258,7 +258,7 @@ function Home() {
                 {
                   previewImages.map( (previewImage, index) => {
                     return (
-                      <div key={index} className={`${loadingRemoveBg !== true ? "cursor-pointer" : "cursor-not-allowed"} relative shadow-lg`} onClick={ e => {
+                      <div key={index} className={`${loadingRemoveBg !== true ? "cursor-pointer" : "cursor-not-allowed"} relative shadow-lg rounded-xl`} onClick={ e => {
                         if ( loadingRemoveBg !== true ) {
                           setFocus(index);
                         }
@@ -270,7 +270,7 @@ function Home() {
                           onClick={() => {
                             removeItem(index);
                           }}
-                          className="flex items-center justify-center bg-red-900 rounded-full w-8 h-8 hover:bg-red-700 transition duration-100 ease-in-out focus:outline-none">
+                          className="flex items-center justify-center bg-red-900 rounded-full w-6 h-6 mt-[0.1em] mr-1 hover:bg-red-700 transition duration-100 ease-in-out focus:outline-none">
                             <svg 
                               xmlns="http://www.w3.org/2000/svg" 
                               className="h-4 w-4 text-white" 
@@ -346,7 +346,7 @@ function Home() {
                               x: [20, 190, 20]
                             }}
                             transition={{
-                              duration:6, 
+                              duration:2, 
                               ease: "easeInOut", 
                               repeat: Infinity, 
                             }}
@@ -370,26 +370,54 @@ function Home() {
               <div className="my-4 px-4 flex justify-center">
               {
                     downloable[focus] !== undefined && (
+                      <div className="flex-col">
+
                       <div
-                      onClick={handleDownload}
-                      className={`cursor-pointer p-4 font-bold text-2xl leading-9 flex items-center`}
-                      >
-                      <svg
-                        className={`h-5 w-5 mr-3 text-blue-500`}
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="2"
-                          d="M4 4v16h16V4H4zm4 8l4 4 4-4m-4-4v8"
-                        />
-                      </svg>
-                        Remove Background
+                        onClick={(ev) => {
+                          handleDownload(ev, "png");
+                        }}
+                        className={`cursor-pointer p-4 font-bold text-2xl leading-9 flex items-center`}>
+                          <svg
+                              className={`h-5 w-5 mr-3 text-blue-500`}
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M4 4v16h16V4H4zm4 8l4 4 4-4m-4-4v8"
+                              />
+                            </svg>
+                          Download HD - PNG
                       </div>
+
+                      <div
+                        onClick={(ev) => {
+                          handleDownload(ev, "webp");
+                        }}
+                        className={`cursor-pointer p-4 font-bold text-2xl leading-9 flex items-center`}>
+                          <svg
+                              className={`h-5 w-5 mr-3 text-blue-500`}
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M4 4v16h16V4H4zm4 8l4 4 4-4m-4-4v8"
+                              />
+                            </svg>
+                          Download HD - WEBP
+                      </div>
+
+                      </div>
+
                     )
               }
               
