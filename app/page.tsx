@@ -374,6 +374,11 @@ function Home() {
                           src={previewImage}
                           alt="preview"
                           className="w-96 h-96 object-cover rounded-lg border-2"
+                          style={{
+                              "backgroundImage":"linear-gradient(45deg, #ccc 25%, transparent 25%, transparent 75%, #ccc 75%, #ccc),linear-gradient(45deg, #ccc 25%, transparent 25%, transparent 75%, #ccc 75%, #ccc)",
+                              "backgroundSize": "20px 20px",
+                              "backgroundPosition": "0 0, 10px 10px"
+                          }}
                         />
                       </div>
                       :  
