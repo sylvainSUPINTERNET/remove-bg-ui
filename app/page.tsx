@@ -6,7 +6,6 @@ import { useEffect, useState } from "react";
 import { Bounce, toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-
 function Home() {
 
   const allowed_types:string[] = ["image/png", "image/jpeg", "image/jpg"];
@@ -168,7 +167,7 @@ function Home() {
       let detail = previewBlob[focus]
       const file: File = new File([previewBlob[focus]], `base_image.${detail.type.split("/")[1]}`, {type: detail.type});
       formData.append('file', file);
-        const resp = await fetch(process.env.NEXT_PUBLIC_API_URL as string, {
+        const resp = await fetch(`${process.env.NEXT_PUBLIC_API_URL as string}/removebg`, {
           method: 'POST',
           body: formData
       });
@@ -200,7 +199,46 @@ function Home() {
   }
 
   async function handleDownload(event:any, format:"png"|"webp") {
-    alert("download as " + format);
+
+    try {
+      let formData = new FormData();
+      let detail = previewBlob[focus]
+      const file: File = new File([previewBlob[focus]], `base_image.${detail.type.split("/")[1]}`, {type: detail.type});
+      formData.append('file', file);
+      formData.append('type', format);
+      const resp = await fetch(`${process.env.NEXT_PUBLIC_API_URL as string}/download`, {
+        method: 'POST',
+        body: formData
+      });
+
+      if ( resp.status === 200 ) {
+        const data = await resp.blob();
+        const imageUrl = URL.createObjectURL(data);
+
+        const disposition = resp.headers.get("Content-Disposition");
+        let filename = "remove_bg";
+        if (disposition && disposition.includes("filename=")) {
+          const filenameMatch = disposition.match(/filename="?([^"]+)"?/);
+          if ( filenameMatch !== null ) { 
+            if (filenameMatch.length > 1) {
+              filename = filenameMatch[1];
+              const link = document.createElement("a");
+              link.href = imageUrl;
+              link.download = filename
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+              URL.revokeObjectURL(imageUrl);
+            }
+          }
+
+        }
+
+
+      }
+    } catch ( e ) {
+      setError("Error while downloading the image");
+    }
   }
 
   return (
@@ -258,7 +296,7 @@ function Home() {
                 {
                   previewImages.map( (previewImage, index) => {
                     return (
-                      <div key={index} className={`${loadingRemoveBg !== true ? "cursor-pointer" : "cursor-not-allowed"} relative shadow-lg rounded-xl`} onClick={ e => {
+                      <div key={index} className={`${loadingRemoveBg !== true ? "cursor-pointer" : "cursor-not-allowed"} relative shadow-lg rounded-xl border-2`} onClick={ e => {
                         if ( loadingRemoveBg !== true ) {
                           setFocus(index);
                         }
@@ -335,13 +373,13 @@ function Home() {
                         <img
                           src={previewImage}
                           alt="preview"
-                          className="w-96 h-96 object-cover rounded-lg shadow-lg "
+                          className="w-96 h-96 object-cover rounded-lg border-2"
                         />
                       </div>
                       :  
                         <div className="relative">
                           <motion.div
-                            className="absolute h-full w-32 bg-red-900 backdrop-filter backdrop-blur-lg bg-opacity-10 shadow-lg border-l-2 border-r-2 border-black"
+                            className="absolute h-full w-32 bg-red-900 backdrop-filter backdrop-blur-lg bg-opacity-10 shadow-lg border-l-2 border-r-2 border-black "
                             animate={{
                               x: [20, 190, 20]
                             }}
@@ -355,7 +393,7 @@ function Home() {
                           <img
                             src={previewImage}
                             alt="preview"
-                            className="w-96 h-96 object-cover rounded-lg shadow-lg 
+                            className="w-96 h-96 object-cover rounded-lg 
                                     shadow-[0_0_50px_20px_rgba(255,0,0,0.5)]"
                           />
                         </div>
