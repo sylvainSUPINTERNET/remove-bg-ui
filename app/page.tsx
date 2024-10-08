@@ -11,7 +11,7 @@ function Home() {
   const allowed_types:string[] = ["image/png", "image/jpeg", "image/jpg"];
   const MAX_FILES:number = 4;
 
-  const [dropBorder, setDropBorder]= useState<string>("");
+  const [dropBorder, setDropBorder]= useState<string>("invisible");
   const [previewImages, setPreviewImages] = useState<string[]>([]);
   const [previewBlob, setPreviewBlob] = useState<Blob[]>([]);
   const [error, setError] = useState<string | null>(null); 
@@ -81,7 +81,7 @@ function Home() {
       } 
     }
 
-    setDropBorder("");
+    setDropBorder("invisible");
   
     if (ev.dataTransfer.items) {
       for (const item of ev.dataTransfer.items) {
@@ -121,14 +121,14 @@ function Home() {
 
   function handleDragOver(event: any) {
     event.preventDefault();
-    setDropBorder("border-[0.4em] border-dashed border-black");
+    setDropBorder("visible");
   }
 
   function handleDragLeave(event: any) {
     event.preventDefault();
 
     if ( previewImages.length === 0) {
-      setDropBorder("");
+      setDropBorder("invisible");
     }
   }
 
@@ -243,10 +243,17 @@ function Home() {
 
   return (
 
-    <div className={`h-screen flex justify-center items-center ${dropBorder} relative `}
+    <div className={`h-screen flex justify-center items-center relative `}
       onDrop={dropHandler}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}>
+
+        <motion.div 
+          animate={{
+            opacity: [0, 0.2, 0.4],
+          }}
+        className={`absolute ${dropBorder} bg-gradient-to-r from-teal-200 to-teal-500 h-full w-full z-10 opacity-40`}>
+        </motion.div>
     
       <ToastContainer />
       <div className={`flex items-center justify-center  rounded 
