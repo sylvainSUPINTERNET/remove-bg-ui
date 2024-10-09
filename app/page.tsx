@@ -8,7 +8,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 function Home() {
 
-  const allowed_types:string[] = ["image/png", "image/jpeg", "image/jpg"];
+  const allowed_types:string[] = ["image/png", "image/jpeg", "image/jpg", "image/webp"];
   const MAX_FILES:number = 4;
 
   const [dropBorder, setDropBorder]= useState<string>("invisible");
@@ -61,7 +61,7 @@ function Home() {
           }
 
           if ( resp.headers.get('content-type') && allowed_types.indexOf(resp.headers.get('content-type')!) === -1 ) {
-            setError("Format must be JPEG or PNG")
+            setError("Format must be JPEG or PNG or WEBP")
           } else {
             const respBoob = await fetch(`${url}`);
             if ( respBoob.ok ) {
@@ -189,6 +189,9 @@ function Home() {
             return newDownloable;
           }
         );
+      } else {
+        setLoadingRemoveBg(false);
+        setError("Error while removing the background");
       }
 
     } catch ( e ) {
