@@ -81,7 +81,7 @@ function Home() {
       } 
     }
 
-    setDropBorder("invisible");
+    //setDropBorder("invisible");
   
     if (ev.dataTransfer.items) {
       for (const item of ev.dataTransfer.items) {
@@ -121,7 +121,7 @@ function Home() {
 
   function handleDragOver(event: any) {
     event.preventDefault();
-    setDropBorder("visible");
+    // setDropBorder("visible");
   }
 
   function handleDragEnter(event: any) {
@@ -135,7 +135,7 @@ function Home() {
     console.log("DRAG LEAVE");
 
     if ( previewImages.length === 0) {
-      setDropBorder("invisible");
+      // setDropBorder("invisible");
     }
   }
 
