@@ -81,7 +81,7 @@ function Home() {
       } 
     }
 
-    //setDropBorder("invisible");
+    setDropBorder("invisible");
   
     if (ev.dataTransfer.items) {
       for (const item of ev.dataTransfer.items) {
@@ -121,21 +121,19 @@ function Home() {
 
   function handleDragOver(event: any) {
     event.preventDefault();
-    // setDropBorder("visible");
+    setDropBorder("visible");
   }
 
   function handleDragEnter(event: any) {
     event.preventDefault();
-    console.log("DRAG ENTER")
   }
 
   function handleDragLeave(event: any) {
     event.preventDefault();
 
-    console.log("DRAG LEAVE");
 
     if ( previewImages.length === 0) {
-      // setDropBorder("invisible");
+      setDropBorder("invisible");
     }
   }
 
@@ -253,25 +251,29 @@ function Home() {
 
   return (
 
-    <div className={`h-screen flex justify-center items-center relative `}>
+    <div className={`h-screen flex justify-center items-center relative `}
+      onDrop={dropHandler}
+      onDragOver={handleDragOver}
+      onDragLeave={ (e:any) => {
+        if (!e.relatedTarget || !e.currentTarget.contains(e.relatedTarget)) {
+          handleDragLeave(e);
+        }
+      }}
+      onDragEnter={handleDragEnter}>
 
-        {/* <motion.div 
+        <motion.div 
           animate={{
             opacity: [0, 0.2, 0.4],
           }}
         className={`absolute ${dropBorder} bg-gradient-to-r from-teal-200 to-teal-500 h-full w-full z-10 opacity-40`}>
-        </motion.div> */}
+        </motion.div>
     
       <ToastContainer />
 
 
       <div className={`flex items-center justify-center  rounded 
                         text-center h-96
-                        `}
-                        onDrop={dropHandler}
-                        onDragOver={handleDragOver}
-                        onDragLeave={handleDragLeave}
-                        onDragEnter={handleDragEnter}>
+                        `}>
 {/* 
 
                           <motion.div
