@@ -1,10 +1,11 @@
 
 "use client";
 
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { Bounce, toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Image from 'next/image';
 
 function Home() {
 
@@ -305,17 +306,110 @@ function Home() {
               hidden: { opacity: 0, y: 60 },
               visible: { opacity: 1, y: 0 }
             }}>
-              <p className="text-5xl font-extrabold leading-tight text-black">Drop your <span className="text-emerald-400">Images</span> or <span className="text-cyan-500">Image URL</span></p>
-            </motion.div>
+
+            <div className="flex justify-center">
+              <motion.div className="mb-5"
+                animate={{
+                  y: [0,1,2,3,4,5,6,7,8,9,10,9,8,7,6,5,4,3,2,1,0],
+                  rotateX: [45, 50, 45]
+                }}
+                transition={{
+                  duration: 10,  // Adjust duration for speed of loop
+                  repeat: Infinity,
+                  // repeatType: "loop", // Ensures the animation loops back to start
+                  // ease: "easeInOut",  // Smoother animation
+                  // repeatDelay: 1.5  // Adds delay between loops
+                }}
+
+                // initial="hidden"
+                // animate="visible"
+                // variants={{
+                //   hidden: { opacity: 0, y: 60 },
+                //   visible: { opacity: 1, y: 0 }
+                // }}
+                >
+            
+                  <Image src="/layers.png" alt="logo" width={128} height={128} draggable={false}></Image>
+                </motion.div>
+              </div>
+
+                <p className="text-5xl font-extrabold leading-tight text-black">Drop your <span className="text-emerald-400">Images</span> or <span className="text-cyan-500">Image URL</span></p>
+                
+                <div className="mt-5 mb-2">
+                  <label className="relative inline-block text-lg group cursor-pointer">
+                    <input 
+                      multiple
+                      type="file" 
+                      className="hidden" 
+                      onChange={(e) => {
+
+                        if ( e.target && e.target.files ) {
+                          if (e.target.files.length > 4 ) {
+                            setError(`Maximum ${MAX_FILES} reached`);
+                            return;
+                          } else {
+
+                            const newPreviewImages: string[] = []; 
+                            const newPreviewImagesBlob: Blob[] = [];
+                            for (let i = 0; i < e.target.files.length; i++) {
+                              const file = e.target.files[i];
+                              if (allowed_types.indexOf(file.type) === -1) {
+                                setError("Format must be JPEG or PNG")
+                              } else {
+                                newPreviewImages.push(URL.createObjectURL(file));
+                                newPreviewImagesBlob.push(file);
+                              }
+                            }
+
+                            setPreviewImages((prevImages) => {
+                              if ( prevImages.length + newPreviewImages.length > MAX_FILES) { 
+                                setError(`Maximum ${MAX_FILES} reached`);
+                                return prevImages;
+                              }
+
+                              if ( loadingRemoveBg !== true ) {
+                                setFocus(prevImages.length + newPreviewImages.length -1);
+                              }
+                              return [...prevImages, ...newPreviewImages]
+                            });
+
+                            setPreviewBlob((prevBlob) => {
+                              return [...prevBlob, ...newPreviewImagesBlob]
+                            });
+
+                          }
+                        }
+                      
+                      }} // Handle file selection here
+                    />
+                    <span className="relative z-10 block px-5 py-3 overflow-hidden font-medium leading-tight text-gray-800 transition-colors duration-300 ease-out border-2 border-gray-900 rounded-lg group-hover:text-white">
+                      <span className="absolute inset-0 w-full h-full px-5 py-3 rounded-lg bg-gray-50"></span>
+                      <span className="absolute left-0 w-48 h-48 -ml-2 transition-all duration-300 origin-top-right -rotate-90 -translate-x-full translate-y-12 bg-gray-900 group-hover:-rotate-180 ease"></span>
+                      <span className="relative">Upload Image</span>
+                    </span>
+                    <span className="absolute bottom-0 right-0 w-full h-12 -mb-1 -mr-1 transition-all duration-200 ease-linear bg-gray-900 rounded-lg group-hover:mb-0 group-hover:mr-0" data-rounded="rounded-lg"></span>
+                  </label>
+                </div>
+
+
+              </motion.div>
         }
         
         
 
-        <div className="absolute h-24 top-2 rounded w-full md:w-3/4">
+        {/* <div className="absolute h-24 top-2 left-100 rounded w-full md:w-3/4"> */}
+        <div>
           <div className="flex justify-center md:gap-4 space-x-2">
               {
                 previewImages.length > 0 && 
-                <>
+
+              <AnimatePresence>
+                    <motion.div
+                      initial={{ opacity: 0, y: 60 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 60 }}
+                      transition={{ duration: 1, ease: "easeOut" }}
+                    >
                 {
                   previewImages.map( (previewImage, index) => {
                     return (
@@ -347,12 +441,13 @@ function Home() {
                         
 
                             
-                        <img src={previewImage} alt="google" className="w-24 h-24 object-cover rounded-xl"/>
+                        <img src={previewImage} alt="preview" className="w-24 h-24 object-cover rounded-xl"/>
                       </div>
                     )
                   })
                 }
-                </>
+              </motion.div>
+              </AnimatePresence>
                 
               }
           </div>
@@ -360,6 +455,13 @@ function Home() {
         
         { 
           previewImages.length > 0 &&
+          <AnimatePresence>
+          <motion.div
+            initial={{ opacity: 0, y: 60 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 60 }}
+            transition={{ duration: 1, ease: "easeOut" }}
+          >
           <div>
               {previewImages.map( (previewImage, index:number) => (
                 <> 
@@ -516,6 +618,8 @@ function Home() {
 
               </div>
           </div>
+          </motion.div>
+          </AnimatePresence>
         }
 
       
