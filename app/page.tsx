@@ -401,6 +401,63 @@ function Home() {
               transition={{ duration: 1, ease: "easeOut" }}>
 
 
+
+            {/* SMALL MENU */}
+            <div className="mt-3 mb-3">
+                {
+                  previewImages.length > 0 && 
+
+                <AnimatePresence>
+                  <motion.div
+                    initial={{ opacity: 0, y: 60 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 60 }}
+                    transition={{ duration: 1, ease: "easeOut" }}
+                    className="flex justify-center">
+                    {
+                      previewImages.map( (previewImage, index) => {
+                        return (
+                          <div key={index} 
+                               className={`${loadingRemoveBg !== true ? "cursor-pointer" : "cursor-not-allowed"} relative shadow-lg rounded-xl border-2`}
+                               onClick={ e => {
+                                  if ( loadingRemoveBg !== true ) {
+                                    setFocus(index);
+                                  }
+                                }}>
+
+                            <div className={`absolute ${index===focus ? "bg-transparent": "bg-black/60"} h-full w-full rounded-xl`}>
+                            </div>
+                            <div className={`absolute right-0`}>
+                              <button 
+                              disabled={loadingRemoveBg}
+                              onClick={() => {
+                                removeItem(index);
+                              }}
+                              className={`flex items-center justify-center ${loadingRemoveBg === true ? 'bg-slate-700': 'bg-red-900'} rounded-full w-6 h-6 mt-[0.1em] mr-1 ${loadingRemoveBg === true ? '': 'hover:bg-red-700'} transition duration-100 ease-in-out focus:outline-none`}>
+                                <svg 
+                                  xmlns="http://www.w3.org/2000/svg" 
+                                  className="h-4 w-4 text-white" 
+                                  fill="none" 
+                                  viewBox="0 0 24 24" 
+                                  stroke="currentColor" 
+                                  strokeWidth={2}>
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                              </button>
+                            </div>
+                            
+
+                                
+                            <img src={previewImage} alt="preview" className="w-24 h-24 object-cover rounded-xl"/>
+                          </div>
+                        )
+                      })
+                    }
+                  </motion.div>
+                </AnimatePresence>
+                  
+                }
+            </div>
             <div className="relative">
 
                 {previewImages.map( (previewImage, index:number) => (
@@ -449,26 +506,52 @@ function Home() {
                           />
                         </div>
                         :  
-                          <div className="relative">
-                            <motion.div
-                              className="absolute h-full w-32 bg-red-900 backdrop-filter backdrop-blur-lg bg-opacity-10 shadow-lg border-l-2 border-r-2 border-black "
-                              animate={{
-                                x: [20, 190, 20]
-                              }}
-                              transition={{
-                                duration:2, 
-                                ease: "easeInOut", 
-                                repeat: Infinity, 
-                              }}
-                            >
-                            </motion.div>
-                            <img
-                              src={previewImage}
-                              alt="preview"
-                              className="w-96 h-96 object-cover rounded-lg 
-                                      shadow-[0_0_50px_20px_rgba(255,0,0,0.5)]"
-                            />
-                          </div>
+                        <div className="relative">
+                          <motion.div 
+                            initial={{ opacity: 0, scale: 1 }}
+                            animate={{ 
+                              opacity: 1,
+                              scale: 1 }}
+                            transition={{ duration: 0.2, ease: "easeOut" }}
+                            className="h-full w-full rounded-lg bg-black/[0.7] bg-opacity-50 absolute z-[99] visible flex items-center justify-center">
+
+
+                            <svg 
+                              className="w-24 h-24 text-white animate-spin" 
+                              fill="currentColor" 
+                              viewBox="0 0 512 512" 
+                              xmlns="http://www.w3.org/2000/svg">
+                              <path d="M55.89,262.818c-3-26-0.5-51.1,6.3-74.3c22.6-77.1,93.5-133.8,177.6-134.8v-50.4c0-2.8,3.5-4.3,5.8-2.6l103.7,76.2    c1.7,1.3,1.7,3.9,0,5.1l-103.6,76.2c-2.4,1.7-5.8,0.2-5.8-2.6v-50.3c-55.3,0.9-102.5,35-122.8,83.2c-7.7,18.2-11.6,38.3-10.5,59.4    c1.5,29,12.4,55.7,29.6,77.3c9.2,11.5,7,28.3-4.9,37c-11.3,8.3-27.1,6-35.8-5C74.19,330.618,59.99,298.218,55.89,262.818z     M355.29,166.018c17.3,21.5,28.2,48.3,29.6,77.3c1.1,21.2-2.9,41.3-10.5,59.4c-20.3,48.2-67.5,82.4-122.8,83.2v-50.3    c0-2.8-3.5-4.3-5.8-2.6l-103.7,76.2c-1.7,1.3-1.7,3.9,0,5.1l103.6,76.2c2.4,1.7,5.8,0.2,5.8-2.6v-50.4    c84.1-0.9,155.1-57.6,177.6-134.8c6.8-23.2,9.2-48.3,6.3-74.3c-4-35.4-18.2-67.8-39.5-94.4c-8.8-11-24.5-13.3-35.8-5    C348.29,137.718,346.09,154.518,355.29,166.018z"/>
+                            </svg>
+
+
+                          </motion.div>
+                          <img
+                            src={previewImage}
+                            alt="preview"
+                            className="w-96 h-96 object-cover rounded-lg shadow-lg" />                                       
+                        </div>
+
+                          // <div className="relative">
+                          //   <motion.div
+                          //     className="absolute h-full w-32 bg-red-900 backdrop-filter backdrop-blur-lg bg-opacity-10 shadow-lg border-l-2 border-r-2 border-black "
+                          //     animate={{
+                          //       x: [20, 190, 20]
+                          //     }}
+                          //     transition={{
+                          //       duration:2, 
+                          //       ease: "easeInOut", 
+                          //       repeat: Infinity, 
+                          //     }}
+                          //   >
+                          //   </motion.div>
+                          //   <img
+                          //     src={previewImage}
+                          //     alt="preview"
+                          //     className="w-96 h-96 object-cover rounded-lg 
+                          //             shadow-[0_0_50px_20px_rgba(255,0,0,0.5)]"
+                          //   />
+                          // </div>
                       }
 
 
@@ -477,90 +560,98 @@ function Home() {
                   </>
                 ))}
                 
-                <div className="my-4 px-4 flex justify-center">
+              
                 {
-                      downloable[focus] !== undefined && (
-                        <div className="flex-col">
+                  downloable[focus] !== undefined && (
+                  <div className="flex flex-col md:flex-row gap-2 items-center justify-center">
 
-                        {/* MAIN LAYOUT ( background removed ) */}
-                        <div
-                          onClick={(ev) => {
-                            handleDownload(ev, "png");
-                          }}
-                          className={`cursor-pointer p-4 font-bold text-2xl leading-9 flex items-center`}>
-                            <svg
-                                className={`h-5 w-5 mr-3 text-blue-500`}
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth="2"
-                                  d="M4 4v16h16V4H4zm4 8l4 4 4-4m-4-4v8"
-                                />
-                              </svg>
-                            Download HD - PNG
-                        </div>
+                    {/* MAIN LAYOUT ( background removed ) */}
 
-                        <div
-                          onClick={(ev) => {
-                            handleDownload(ev, "webp");
-                          }}
-                          className={`cursor-pointer p-4 font-bold text-2xl leading-9 flex items-center`}>
-                            <svg
-                                className={`h-5 w-5 mr-3 text-blue-500`}
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth="2"
-                                  d="M4 4v16h16V4H4zm4 8l4 4 4-4m-4-4v8"
-                                />
-                              </svg>
-                            Download HD - WEBP
-                        </div>
+                      <button 
+                        onClick={(ev) => {
+                          handleDownload(ev, "png");
+                        }}
+                        className="box-border relative z-30 inline-flex items-center justify-center w-48 px-8 py-3 overflow-hidden font-bold text-white transition-all duration-300 bg-indigo-600 rounded-md cursor-pointer group ring-offset-2 ring-1 ring-indigo-300 ring-offset-indigo-200 hover:ring-offset-indigo-500 ease focus:outline-none">
+                        <span className="absolute bottom-0 right-0 w-8 h-20 -mb-8 -mr-5 transition-all duration-300 ease-out transform rotate-45 translate-x-1 bg-white opacity-10 group-hover:translate-x-0"></span>
+                        <span className="absolute top-0 left-0 w-20 h-8 -mt-1 -ml-12 transition-all duration-300 ease-out transform -rotate-45 -translate-x-1 bg-white opacity-10 group-hover:translate-x-0"></span>
+                        <span className="relative z-20 flex items-center text-sm">
+                        <svg className="relative w-5 h-5 mr-2 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v12m0 0l-6-6m6 6l6-6M4 20h16" />
+                          </svg>
+                          PNG
+                        </span>
+                      </button>
 
-                        </div>
+                      <button 
+                        onClick={(ev) => {
+                          handleDownload(ev, "webp");
+                        }}
+                        className="box-border relative z-30 inline-flex items-center justify-center w-48 px-8 py-3 overflow-hidden font-bold text-white transition-all duration-300 bg-indigo-600 rounded-md cursor-pointer group ring-offset-2 ring-1 ring-indigo-300 ring-offset-indigo-200 hover:ring-offset-indigo-500 ease focus:outline-none">
+                        <span className="absolute bottom-0 right-0 w-8 h-20 -mb-8 -mr-5 transition-all duration-300 ease-out transform rotate-45 translate-x-1 bg-white opacity-10 group-hover:translate-x-0"></span>
+                        <span className="absolute top-0 left-0 w-20 h-8 -mt-1 -ml-12 transition-all duration-300 ease-out transform -rotate-45 -translate-x-1 bg-white opacity-10 group-hover:translate-x-0"></span>
+                        <span className="relative z-20 flex items-center text-sm">
+                        <svg className="relative w-5 h-5 mr-2 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v12m0 0l-6-6m6 6l6-6M4 20h16" />
+                        </svg>
+                          WEBP
+                        </span>
+                      </button>
 
-                      )
+                    </div>
+
+                  )
                 }
                 
                 {
 
                   downloable[focus] === undefined && (
-                    <div
-                      onClick={handleRemoveBg}
-                      className={`${loadingRemoveBg === false ? "cursor-pointer": "cursor-progress"} p-4 font-bold text-2xl leading-9 flex items-center
-                      ${dropBorder === 'visible' ? 'blur-xl': ''}`}>
+                    // <div
+                    //   onClick={handleRemoveBg}
+                    //   className={`${loadingRemoveBg === false ? "cursor-pointer": "cursor-progress"} p-4 font-bold text-2xl leading-9 flex items-center
+                    //   ${dropBorder === 'visible' ? 'blur-xl': ''}`}>
                     
-                      <svg
-                        className={`h-5 w-5 mr-3 text-blue-500 ${loadingRemoveBg ? 'animate-spin' : ''}`}
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth="4"
-                          d="M4 12a8 8 0 018-8v8z"
-                        ></path>
-                      </svg>
-                      Remove Background
+                    //   <svg
+                    //     className={`h-5 w-5 mr-3 text-blue-500 ${loadingRemoveBg ? 'animate-spin' : ''}`}
+                    //     xmlns="http://www.w3.org/2000/svg"
+                    //     fill="none"
+                    //     viewBox="0 0 24 24"
+                    //     stroke="currentColor"
+                    //   >
+                    //     <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    //     <path
+                    //       strokeLinecap="round"
+                    //       strokeLinejoin="round"
+                    //       strokeWidth="4"
+                    //       d="M4 12a8 8 0 018-8v8z"
+                    //     ></path>
+                    //   </svg>
+                    //   Remove Background
+                    // </div>
+                    <div className={`${dropBorder === 'visible' ? 'blur-xl': ''} flex justify-center`}>
+                        <button
+                            onClick={handleRemoveBg}
+                            disabled={loadingRemoveBg}
+                            className={`relative inline-block text-lg group 
+                                        ${loadingRemoveBg ? 'cursor-not-allowed opacity-50' : ''}`}>
+                            <span className={`relative z-10 block px-5 py-3 overflow-hidden font-medium leading-tight 
+                                            transition-colors duration-300 ease-out border-2 rounded-lg 
+                                            ${loadingRemoveBg ? 'text-gray-400 border-gray-400' : 'text-gray-800 border-gray-900 group-hover:text-white'}`}>
+                                <span className={`absolute inset-0 w-full h-full px-5 py-3 rounded-lg 
+                                                ${loadingRemoveBg ? 'bg-gray-200' : 'bg-gray-50'}`}></span>
+                                <span className={`absolute left-0 w-60 h-48 -ml-2 transition-all duration-300 origin-top-right 
+                                                ${loadingRemoveBg ? 'bg-gray-400' : 'bg-gray-900 group-hover:-rotate-180'} 
+                                                -rotate-90 -translate-x-full translate-y-12 ease`}></span>
+                                <span className="relative">Remove Background</span>
+                            </span>
+                            <span className={`absolute bottom-0 right-0 w-full h-12 -mb-1 -mr-1 transition-all duration-200 ease-linear 
+                                            ${loadingRemoveBg ? 'bg-gray-400' : 'bg-gray-900 group-hover:mb-0 group-hover:mr-0'} 
+                                            rounded-lg`} data-rounded="rounded-lg"></span>
+                        </button>
                     </div>
+
                     )
                 }
 
-                </div>
             </div>
             </motion.div>
 
@@ -568,63 +659,6 @@ function Home() {
             </AnimatePresence>
             }
 
-
-
-
-            {/* SMALL MENU */}
-            <div className="flex justify-center">
-                {
-                  previewImages.length > 0 && 
-
-                <AnimatePresence>
-                  <motion.div
-                    initial={{ opacity: 0, y: 60 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 60 }}
-                    transition={{ duration: 1, ease: "easeOut" }}>
-                    {
-                      previewImages.map( (previewImage, index) => {
-                        return (
-                          <div key={index} 
-                               className={`${loadingRemoveBg !== true ? "cursor-pointer" : "cursor-not-allowed"} relative shadow-lg rounded-xl border-2`}
-                               onClick={ e => {
-                                  if ( loadingRemoveBg !== true ) {
-                                    setFocus(index);
-                                  }
-                                }}>
-
-                            <div className={`absolute ${index===focus ? "bg-transparent": "bg-black/60"} h-full w-full rounded-xl`}>
-                            </div>
-                            <div className={`absolute right-0`}>
-                              <button 
-                              onClick={() => {
-                                removeItem(index);
-                              }}
-                              className="flex items-center justify-center bg-red-900 rounded-full w-6 h-6 mt-[0.1em] mr-1 hover:bg-red-700 transition duration-100 ease-in-out focus:outline-none">
-                                <svg 
-                                  xmlns="http://www.w3.org/2000/svg" 
-                                  className="h-4 w-4 text-white" 
-                                  fill="none" 
-                                  viewBox="0 0 24 24" 
-                                  stroke="currentColor" 
-                                  strokeWidth={2}>
-                                  <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                                </svg>
-                              </button>
-                            </div>
-                            
-
-                                
-                            <img src={previewImage} alt="preview" className="w-24 h-24 object-cover rounded-xl"/>
-                          </div>
-                        )
-                      })
-                    }
-                  </motion.div>
-                </AnimatePresence>
-                  
-                }
-            </div>
 
           </div>
           
