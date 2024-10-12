@@ -131,11 +131,12 @@ function Home() {
 
   function handleDragLeave(event: any) {
     event.preventDefault();
+    setDropBorder("invisible");
 
 
-    if ( previewImages.length === 0) {
-      setDropBorder("invisible");
-    }
+    // if ( previewImages.length === 0) {
+    //   setDropBorder("invisible");
+    // }
   }
 
 
@@ -253,7 +254,7 @@ function Home() {
   return (
 
     <div>           
-        <motion.div 
+        {/* <motion.div 
                       initial={{ opacity: 0, scale:1 }}
                       animate={{ opacity: dropBorder === 'visible' ? 1 : 0 }}
                       transition={{ duration: 0.2, ease: "easeOut" }}
@@ -261,7 +262,7 @@ function Home() {
                       <div className="flex justify-center mt-[2em]">
                         <Image src="/upload.gif" alt="" width={128} height={128}></Image>
                       </div>
-        </motion.div>
+        </motion.div> */}
 
         <ToastContainer />
 
@@ -285,6 +286,7 @@ function Home() {
                     onDragOver={handleDragOver}
                     onDragLeave={ (e:any) => {
                       if (!e.relatedTarget || !e.currentTarget.contains(e.relatedTarget)) {
+                        console.log("???)");
                         handleDragLeave(e);
                       }
                     }}
@@ -407,7 +409,7 @@ function Home() {
                   { focus === index && (
                     <div className="p-4 relative flex justify-center" key={index} >
 
-                      <div className="absolute top-0 right-4"></div>
+                      {/* <div className="absolute top-0 right-4"></div> */}
                       
                       {
                         loadingRemoveBg !== true ? 
@@ -432,12 +434,12 @@ function Home() {
                             <div className={`h-full w-full rounded-lg bg-gradient-to-r from-[#FEAC5E] via-[#C779D0] to-[#4BC0C8] blur-xl absolute z-[98]`}>
                             </div>
                           </motion.div>
-                        
 
+                    
                           <img
                             src={previewImage}
                             alt="preview"
-                            className="w-96 h-96 object-cover rounded-lg border-2"
+                            className={`w-96 h-96 object-cover rounded-lg border-2 ${dropBorder === 'visible'? 'blur-xl' : ''}`}
 
                             style={{
                               "backgroundImage" : downloable[focus] !== undefined ? "linear-gradient(45deg, #ccc 25%, transparent 25%, transparent 75%, #ccc 75%, #ccc),linear-gradient(45deg, #ccc 25%, transparent 25%, transparent 75%, #ccc 75%, #ccc)" : "none",
@@ -535,8 +537,9 @@ function Home() {
                   downloable[focus] === undefined && (
                     <div
                       onClick={handleRemoveBg}
-                      className={`${loadingRemoveBg === false ? "cursor-pointer": "cursor-progress"} p-4 font-bold text-2xl leading-9 flex items-center`}
-                    >
+                      className={`${loadingRemoveBg === false ? "cursor-pointer": "cursor-progress"} p-4 font-bold text-2xl leading-9 flex items-center
+                      ${dropBorder === 'visible' ? 'blur-xl': ''}`}>
+                    
                       <svg
                         className={`h-5 w-5 mr-3 text-blue-500 ${loadingRemoveBg ? 'animate-spin' : ''}`}
                         xmlns="http://www.w3.org/2000/svg"
@@ -569,7 +572,7 @@ function Home() {
 
 
             {/* SMALL MENU */}
-            <div className="flex justify-center md:gap-4 space-x-2">
+            <div className="flex justify-center">
                 {
                   previewImages.length > 0 && 
 
