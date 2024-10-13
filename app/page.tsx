@@ -254,15 +254,6 @@ function Home() {
   return (
 
     <div>           
-        {/* <motion.div 
-                      initial={{ opacity: 0, scale:1 }}
-                      animate={{ opacity: dropBorder === 'visible' ? 1 : 0 }}
-                      transition={{ duration: 0.2, ease: "easeOut" }}
-                      className={`${dropBorder ? 'visible' : 'hidden'}`}>
-                      <div className="flex justify-center mt-[2em]">
-                        <Image src="/upload.gif" alt="" width={128} height={128}></Image>
-                      </div>
-        </motion.div> */}
 
         <ToastContainer />
 
@@ -286,7 +277,6 @@ function Home() {
                     onDragOver={handleDragOver}
                     onDragLeave={ (e:any) => {
                       if (!e.relatedTarget || !e.currentTarget.contains(e.relatedTarget)) {
-                        console.log("???)");
                         handleDragLeave(e);
                       }
                     }}
@@ -417,7 +407,7 @@ function Home() {
                     {
                       previewImages.map( (previewImage, index) => {
                         return (
-                          <div key={index} 
+                          <div key={index+"small"} 
                                className={`${loadingRemoveBg !== true ? "cursor-pointer" : "cursor-not-allowed"} relative shadow-lg rounded-xl border-2`}
                                onClick={ e => {
                                   if ( loadingRemoveBg !== true ) {
@@ -460,105 +450,107 @@ function Home() {
             </div>
             <div className="relative">
 
-                {previewImages.map( (previewImage, index:number) => (
-                  <> 
-                  {/* MAIN LAYOUT ( with background ) */}
-                  { focus === index && (
-                    <div className="p-4 relative flex justify-center" key={index} >
+                {
+                previewImages.map( (previewImage, index:number) => (
+                    <div key={index}> 
+                    {/* MAIN LAYOUT ( with background ) */}
+                    { focus === index && (
+                      <div className="p-4 relative flex justify-center" key={index+"main"} >
 
-                      {/* <div className="absolute top-0 right-4"></div> */}
-                      
-                      {
-                        loadingRemoveBg !== true ? 
-                        <div className="relative"   
-                          onDrop={dropHandler}
-                          onDragOver={handleDragOver}
-                          onDragLeave={ (e:any) => {
-                            if (!e.relatedTarget || !e.currentTarget.contains(e.relatedTarget)) {
-                              handleDragLeave(e);
-                            }
-                          }}
-                          onDragEnter={handleDragEnter}>
-
-
-                          <motion.div 
-                            initial={{ opacity: 0, scale:1 }}
-                            animate={{ 
-                              opacity: dropBorder === 'visible' ? 1 : 0,
-                              scale: dropBorder === 'visible' ? 1: 1 }}
-                            transition={{ duration: 0.2, ease: "easeOut" }}
-                            className={`h-full w-full rounded-lg bg-purple-400 bg-clip-padding border border-black blur-xl absolute z-[99] ${dropBorder ? 'visible' : 'hidden'}`}>
-                            <div className={`h-full w-full rounded-lg bg-gradient-to-r from-[#FEAC5E] via-[#C779D0] to-[#4BC0C8] blur-xl absolute z-[98]`}>
-                            </div>
-                          </motion.div>
-
-                    
-                          <img
-                            src={previewImage}
-                            alt="preview"
-                            className={`w-96 h-96 object-cover rounded-lg border-2 ${dropBorder === 'visible'? 'blur-xl' : ''}`}
-
-                            style={{
-                              "backgroundImage" : downloable[focus] !== undefined ? "linear-gradient(45deg, #ccc 25%, transparent 25%, transparent 75%, #ccc 75%, #ccc),linear-gradient(45deg, #ccc 25%, transparent 25%, transparent 75%, #ccc 75%, #ccc)" : "none",
-                              "backgroundSize": downloable[focus] !== undefined ? "20px 20px" : "none",
-                              "backgroundPosition": downloable[focus] !== undefined ? "0 0, 10px 10px" : "none"
+                        {/* <div className="absolute top-0 right-4"></div> */}
+                        
+                        {
+                          loadingRemoveBg !== true ? 
+                          <div className="relative"   
+                            onDrop={dropHandler}
+                            onDragOver={handleDragOver}
+                            onDragLeave={ (e:any) => {
+                              if (!e.relatedTarget || !e.currentTarget.contains(e.relatedTarget)) {
+                                handleDragLeave(e);
+                              }
                             }}
-                          />
-                        </div>
-                        :  
-                        <div className="relative">
-                          <motion.div 
-                            initial={{ opacity: 0, scale: 1 }}
-                            animate={{ 
-                              opacity: 1,
-                              scale: 1 }}
-                            transition={{ duration: 0.2, ease: "easeOut" }}
-                            className="h-full w-full rounded-lg bg-black/[0.7] bg-opacity-50 absolute z-[99] visible flex items-center justify-center">
+                            onDragEnter={handleDragEnter}>
 
 
-                            <svg 
-                              className="w-24 h-24 text-white animate-spin" 
-                              fill="currentColor" 
-                              viewBox="0 0 512 512" 
-                              xmlns="http://www.w3.org/2000/svg">
-                              <path d="M55.89,262.818c-3-26-0.5-51.1,6.3-74.3c22.6-77.1,93.5-133.8,177.6-134.8v-50.4c0-2.8,3.5-4.3,5.8-2.6l103.7,76.2    c1.7,1.3,1.7,3.9,0,5.1l-103.6,76.2c-2.4,1.7-5.8,0.2-5.8-2.6v-50.3c-55.3,0.9-102.5,35-122.8,83.2c-7.7,18.2-11.6,38.3-10.5,59.4    c1.5,29,12.4,55.7,29.6,77.3c9.2,11.5,7,28.3-4.9,37c-11.3,8.3-27.1,6-35.8-5C74.19,330.618,59.99,298.218,55.89,262.818z     M355.29,166.018c17.3,21.5,28.2,48.3,29.6,77.3c1.1,21.2-2.9,41.3-10.5,59.4c-20.3,48.2-67.5,82.4-122.8,83.2v-50.3    c0-2.8-3.5-4.3-5.8-2.6l-103.7,76.2c-1.7,1.3-1.7,3.9,0,5.1l103.6,76.2c2.4,1.7,5.8,0.2,5.8-2.6v-50.4    c84.1-0.9,155.1-57.6,177.6-134.8c6.8-23.2,9.2-48.3,6.3-74.3c-4-35.4-18.2-67.8-39.5-94.4c-8.8-11-24.5-13.3-35.8-5    C348.29,137.718,346.09,154.518,355.29,166.018z"/>
-                            </svg>
+                            <motion.div 
+                              initial={{ opacity: 0, scale:1 }}
+                              animate={{ 
+                                opacity: dropBorder === 'visible' ? 1 : 0,
+                                scale: dropBorder === 'visible' ? 1: 1 }}
+                              transition={{ duration: 0.2, ease: "easeOut" }}
+                              className={`h-full w-full rounded-lg bg-purple-400 bg-clip-padding border border-black blur-xl absolute z-[99] ${dropBorder ? 'visible' : 'hidden'}`}>
+                              <div className={`h-full w-full rounded-lg bg-gradient-to-r from-[#FEAC5E] via-[#C779D0] to-[#4BC0C8] blur-xl absolute z-[98]`}>
+                              </div>
+                            </motion.div>
+
+                      
+                            <img
+                              src={previewImage}
+                              alt="preview"
+                              className={`w-96 h-96 object-cover rounded-lg border-2 ${dropBorder === 'visible'? 'blur-xl' : ''}`}
+
+                              style={{
+                                "backgroundImage" : downloable[focus] !== undefined ? "linear-gradient(45deg, #ccc 25%, transparent 25%, transparent 75%, #ccc 75%, #ccc),linear-gradient(45deg, #ccc 25%, transparent 25%, transparent 75%, #ccc 75%, #ccc)" : "none",
+                                "backgroundSize": downloable[focus] !== undefined ? "20px 20px" : "none",
+                                "backgroundPosition": downloable[focus] !== undefined ? "0 0, 10px 10px" : "none"
+                              }}
+                            />
+                          </div>
+                          :  
+                          <div className="relative">
+                            <motion.div 
+                              initial={{ opacity: 0, scale: 1 }}
+                              animate={{ 
+                                opacity: 1,
+                                scale: 1 }}
+                              transition={{ duration: 0.2, ease: "easeOut" }}
+                              className="h-full w-full rounded-lg bg-black/[0.7] bg-opacity-50 absolute z-[99] visible flex items-center justify-center">
 
 
-                          </motion.div>
-                          <img
-                            src={previewImage}
-                            alt="preview"
-                            className="w-96 h-96 object-cover rounded-lg shadow-lg" />                                       
-                        </div>
-
-                          // <div className="relative">
-                          //   <motion.div
-                          //     className="absolute h-full w-32 bg-red-900 backdrop-filter backdrop-blur-lg bg-opacity-10 shadow-lg border-l-2 border-r-2 border-black "
-                          //     animate={{
-                          //       x: [20, 190, 20]
-                          //     }}
-                          //     transition={{
-                          //       duration:2, 
-                          //       ease: "easeInOut", 
-                          //       repeat: Infinity, 
-                          //     }}
-                          //   >
-                          //   </motion.div>
-                          //   <img
-                          //     src={previewImage}
-                          //     alt="preview"
-                          //     className="w-96 h-96 object-cover rounded-lg 
-                          //             shadow-[0_0_50px_20px_rgba(255,0,0,0.5)]"
-                          //   />
-                          // </div>
-                      }
+                              <svg 
+                                className="w-24 h-24 text-white animate-spin" 
+                                fill="currentColor" 
+                                viewBox="0 0 512 512" 
+                                xmlns="http://www.w3.org/2000/svg">
+                                <path d="M55.89,262.818c-3-26-0.5-51.1,6.3-74.3c22.6-77.1,93.5-133.8,177.6-134.8v-50.4c0-2.8,3.5-4.3,5.8-2.6l103.7,76.2    c1.7,1.3,1.7,3.9,0,5.1l-103.6,76.2c-2.4,1.7-5.8,0.2-5.8-2.6v-50.3c-55.3,0.9-102.5,35-122.8,83.2c-7.7,18.2-11.6,38.3-10.5,59.4    c1.5,29,12.4,55.7,29.6,77.3c9.2,11.5,7,28.3-4.9,37c-11.3,8.3-27.1,6-35.8-5C74.19,330.618,59.99,298.218,55.89,262.818z     M355.29,166.018c17.3,21.5,28.2,48.3,29.6,77.3c1.1,21.2-2.9,41.3-10.5,59.4c-20.3,48.2-67.5,82.4-122.8,83.2v-50.3    c0-2.8-3.5-4.3-5.8-2.6l-103.7,76.2c-1.7,1.3-1.7,3.9,0,5.1l103.6,76.2c2.4,1.7,5.8,0.2,5.8-2.6v-50.4    c84.1-0.9,155.1-57.6,177.6-134.8c6.8-23.2,9.2-48.3,6.3-74.3c-4-35.4-18.2-67.8-39.5-94.4c-8.8-11-24.5-13.3-35.8-5    C348.29,137.718,346.09,154.518,355.29,166.018z"/>
+                              </svg>
 
 
+                            </motion.div>
+                            <img
+                              src={previewImage}
+                              alt="preview"
+                              className="w-96 h-96 object-cover rounded-lg shadow-lg" />                                       
+                          </div>
+
+                            // <div className="relative">
+                            //   <motion.div
+                            //     className="absolute h-full w-32 bg-red-900 backdrop-filter backdrop-blur-lg bg-opacity-10 shadow-lg border-l-2 border-r-2 border-black "
+                            //     animate={{
+                            //       x: [20, 190, 20]
+                            //     }}
+                            //     transition={{
+                            //       duration:2, 
+                            //       ease: "easeInOut", 
+                            //       repeat: Infinity, 
+                            //     }}
+                            //   >
+                            //   </motion.div>
+                            //   <img
+                            //     src={previewImage}
+                            //     alt="preview"
+                            //     className="w-96 h-96 object-cover rounded-lg 
+                            //             shadow-[0_0_50px_20px_rgba(255,0,0,0.5)]"
+                            //   />
+                            // </div>
+                        }
+
+
+                      </div>
+                    )}
                     </div>
-                  )}
-                  </>
-                ))}
+                  ))
+                }
                 
               
                 {
@@ -661,351 +653,9 @@ function Home() {
 
 
           </div>
-          
-
-          {/* AFTER REMOVED BACKGROUND */}
-
-        
+                  
       </div>
 
-    // <div className={`h-screen flex justify-center items-center relative `}
-    //   onDrop={dropHandler}
-    //   onDragOver={handleDragOver}
-    //   onDragLeave={ (e:any) => {
-    //     if (!e.relatedTarget || !e.currentTarget.contains(e.relatedTarget)) {
-    //       handleDragLeave(e);
-    //     }
-    //   }}
-    //   onDragEnter={handleDragEnter}>
-
-    //     <motion.div 
-    //       animate={{
-    //         opacity: [0, 0.2, 0.4],
-    //       }}
-    //     className={`absolute ${dropBorder} bg-gradient-to-r from-teal-200 to-teal-500 h-full w-full z-10 opacity-40`}>
-    //     </motion.div>
-    
-    //   <ToastContainer />
-
-
-    //   <div className={`flex items-center justify-center  rounded 
-    //                     text-center h-96
-    //                     `}>
-
-    //     {
-    //       previewImages.length <= 0 && 
-    //         <motion.div
-    //         initial="hidden"
-    //         animate="visible"
-    //         transition={{ duration: 1, ease: "easeOut" }}
-    //         variants={{
-    //           hidden: { opacity: 0, y: 60 },
-    //           visible: { opacity: 1, y: 0 }
-    //         }}>
-
-    //         <div className="flex justify-center">
-    //           <motion.div className="mb-5"
-    //             animate={{
-    //               y: [0,1,2,3,4,5,6,7,8,9,10,9,8,7,6,5,4,3,2,1,0],
-    //               rotateX: [45, 50, 45]
-    //             }}
-    //             transition={{
-    //               duration: 10,  // Adjust duration for speed of loop
-    //               repeat: Infinity,
-    //               // repeatType: "loop", // Ensures the animation loops back to start
-    //               // ease: "easeInOut",  // Smoother animation
-    //               // repeatDelay: 1.5  // Adds delay between loops
-    //             }}
-
-    //             // initial="hidden"
-    //             // animate="visible"
-    //             // variants={{
-    //             //   hidden: { opacity: 0, y: 60 },
-    //             //   visible: { opacity: 1, y: 0 }
-    //             // }}
-    //             >
-            
-    //               <Image src="/layers.png" alt="logo" width={128} height={128} draggable={false}></Image>
-    //             </motion.div>
-    //           </div>
-
-    //             <p className="text-5xl font-extrabold leading-tight text-black">Drop your <span className="text-emerald-400">Images</span> or <span className="text-cyan-500">Image URL</span></p>
-                
-    //             <div className="mt-5 mb-2">
-    //               <label className="relative inline-block text-lg group cursor-pointer">
-    //                 <input 
-    //                   multiple
-    //                   type="file" 
-    //                   className="hidden" 
-    //                   onChange={(e) => {
-
-    //                     if ( e.target && e.target.files ) {
-    //                       if (e.target.files.length > 4 ) {
-    //                         setError(`Maximum ${MAX_FILES} reached`);
-    //                         return;
-    //                       } else {
-
-    //                         const newPreviewImages: string[] = []; 
-    //                         const newPreviewImagesBlob: Blob[] = [];
-    //                         for (let i = 0; i < e.target.files.length; i++) {
-    //                           const file = e.target.files[i];
-    //                           if (allowed_types.indexOf(file.type) === -1) {
-    //                             setError("Format must be JPEG or PNG")
-    //                           } else {
-    //                             newPreviewImages.push(URL.createObjectURL(file));
-    //                             newPreviewImagesBlob.push(file);
-    //                           }
-    //                         }
-
-    //                         setPreviewImages((prevImages) => {
-    //                           if ( prevImages.length + newPreviewImages.length > MAX_FILES) { 
-    //                             setError(`Maximum ${MAX_FILES} reached`);
-    //                             return prevImages;
-    //                           }
-
-    //                           if ( loadingRemoveBg !== true ) {
-    //                             setFocus(prevImages.length + newPreviewImages.length -1);
-    //                           }
-    //                           return [...prevImages, ...newPreviewImages]
-    //                         });
-
-    //                         setPreviewBlob((prevBlob) => {
-    //                           return [...prevBlob, ...newPreviewImagesBlob]
-    //                         });
-
-    //                       }
-    //                     }
-                      
-    //                   }} // Handle file selection here
-    //                 />
-    //                 <span className="relative z-10 block px-5 py-3 overflow-hidden font-medium leading-tight text-gray-800 transition-colors duration-300 ease-out border-2 border-gray-900 rounded-lg group-hover:text-white">
-    //                   <span className="absolute inset-0 w-full h-full px-5 py-3 rounded-lg bg-gray-50"></span>
-    //                   <span className="absolute left-0 w-48 h-48 -ml-2 transition-all duration-300 origin-top-right -rotate-90 -translate-x-full translate-y-12 bg-gray-900 group-hover:-rotate-180 ease"></span>
-    //                   <span className="relative">Upload Image</span>
-    //                 </span>
-    //                 <span className="absolute bottom-0 right-0 w-full h-12 -mb-1 -mr-1 transition-all duration-200 ease-linear bg-gray-900 rounded-lg group-hover:mb-0 group-hover:mr-0" data-rounded="rounded-lg"></span>
-    //               </label>
-    //             </div>
-
-
-    //           </motion.div>
-    //     }
-        
-        
-
-    //     {/* <div className="absolute h-24 top-2 left-100 rounded w-full md:w-3/4"> */}
-    //     <div>
-    //       <div className="flex justify-center md:gap-4 space-x-2">
-    //           {
-    //             previewImages.length > 0 && 
-
-    //           <AnimatePresence>
-                
-    //                 <motion.div
-    //                   initial={{ opacity: 0, y: 60 }}
-    //                   animate={{ opacity: 1, y: 0 }}
-    //                   exit={{ opacity: 0, y: 60 }}
-    //                   transition={{ duration: 1, ease: "easeOut" }}
-    //                 >
-    //             {
-    //               previewImages.map( (previewImage, index) => {
-    //                 return (
-    //                   <div key={index} className={`${loadingRemoveBg !== true ? "cursor-pointer" : "cursor-not-allowed"} relative shadow-lg rounded-xl border-2`} onClick={ e => {
-    //                     if ( loadingRemoveBg !== true ) {
-    //                       setFocus(index);
-    //                     }
-    //                   }}>
-    //                     {/* SMALL MENU */}
-    //                     <div className={`absolute ${index===focus ? "bg-transparent": "bg-black/60"} h-full w-full rounded-xl`}>
-    //                     </div>
-    //                     <div className={`absolute right-0`}>
-    //                       <button 
-    //                       onClick={() => {
-    //                         removeItem(index);
-    //                       }}
-    //                       className="flex items-center justify-center bg-red-900 rounded-full w-6 h-6 mt-[0.1em] mr-1 hover:bg-red-700 transition duration-100 ease-in-out focus:outline-none">
-    //                         <svg 
-    //                           xmlns="http://www.w3.org/2000/svg" 
-    //                           className="h-4 w-4 text-white" 
-    //                           fill="none" 
-    //                           viewBox="0 0 24 24" 
-    //                           stroke="currentColor" 
-    //                           strokeWidth={2}
-    //                         >
-    //                           <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-    //                         </svg>
-    //                       </button>
-    //                     </div>
-                        
-
-                            
-    //                     <img src={previewImage} alt="preview" className="w-24 h-24 object-cover rounded-xl"/>
-    //                   </div>
-    //                 )
-    //               })
-    //             }
-    //           </motion.div>
-    //           </AnimatePresence>
-                
-    //           }
-    //       </div>
-    //     </div>
-        
-    //     { 
-    //       previewImages.length > 0 &&
-    //       <AnimatePresence>
-    //       <motion.div
-    //         initial={{ opacity: 0, y: 60 }}
-    //         animate={{ opacity: 1, y: 0 }}
-    //         exit={{ opacity: 0, y: 60 }}
-    //         transition={{ duration: 1, ease: "easeOut" }}
-    //       >
-    //       <div>
-    //           {previewImages.map( (previewImage, index:number) => (
-    //             <> 
-    //             {/* MAIN LAYOUT ( with background ) */}
-    //             { focus === index && (
-    //               <div className="p-4 relative" key={index} >
-
-    //                 <div className="absolute top-0 right-4"></div>
-                    
-    //                 {
-    //                   loadingRemoveBg !== true ? 
-    //                   <div className="relative">
-    //                     <img
-    //                       src={previewImage}
-    //                       alt="preview"
-    //                       className="w-96 h-96 object-cover rounded-lg border-2"
-
-    //                       style={{
-    //                         "backgroundImage" : downloable[focus] !== undefined ? "linear-gradient(45deg, #ccc 25%, transparent 25%, transparent 75%, #ccc 75%, #ccc),linear-gradient(45deg, #ccc 25%, transparent 25%, transparent 75%, #ccc 75%, #ccc)" : "none",
-    //                         "backgroundSize": downloable[focus] !== undefined ? "20px 20px" : "none",
-    //                         "backgroundPosition": downloable[focus] !== undefined ? "0 0, 10px 10px" : "none"
-    //                       }}
-    //                     />
-    //                   </div>
-    //                   :  
-    //                     <div className="relative">
-    //                       <motion.div
-    //                         className="absolute h-full w-32 bg-red-900 backdrop-filter backdrop-blur-lg bg-opacity-10 shadow-lg border-l-2 border-r-2 border-black "
-    //                         animate={{
-    //                           x: [20, 190, 20]
-    //                         }}
-    //                         transition={{
-    //                           duration:2, 
-    //                           ease: "easeInOut", 
-    //                           repeat: Infinity, 
-    //                         }}
-    //                       >
-    //                       </motion.div>
-    //                       <img
-    //                         src={previewImage}
-    //                         alt="preview"
-    //                         className="w-96 h-96 object-cover rounded-lg 
-    //                                 shadow-[0_0_50px_20px_rgba(255,0,0,0.5)]"
-    //                       />
-    //                     </div>
-    //                 }
-
-
-    //               </div>
-    //             )}
-    //             </>
-    //           ))}
-              
-    //           <div className="my-4 px-4 flex justify-center">
-    //           {
-    //                 downloable[focus] !== undefined && (
-    //                   <div className="flex-col">
-
-    //                   {/* MAIN LAYOUT ( background removed ) */}
-    //                   <div
-    //                     onClick={(ev) => {
-    //                       handleDownload(ev, "png");
-    //                     }}
-    //                     className={`cursor-pointer p-4 font-bold text-2xl leading-9 flex items-center`}>
-    //                       <svg
-    //                           className={`h-5 w-5 mr-3 text-blue-500`}
-    //                           xmlns="http://www.w3.org/2000/svg"
-    //                           fill="none"
-    //                           viewBox="0 0 24 24"
-    //                           stroke="currentColor"
-    //                         >
-    //                           <path
-    //                             strokeLinecap="round"
-    //                             strokeLinejoin="round"
-    //                             strokeWidth="2"
-    //                             d="M4 4v16h16V4H4zm4 8l4 4 4-4m-4-4v8"
-    //                           />
-    //                         </svg>
-    //                       Download HD - PNG
-    //                   </div>
-
-    //                   <div
-    //                     onClick={(ev) => {
-    //                       handleDownload(ev, "webp");
-    //                     }}
-    //                     className={`cursor-pointer p-4 font-bold text-2xl leading-9 flex items-center`}>
-    //                       <svg
-    //                           className={`h-5 w-5 mr-3 text-blue-500`}
-    //                           xmlns="http://www.w3.org/2000/svg"
-    //                           fill="none"
-    //                           viewBox="0 0 24 24"
-    //                           stroke="currentColor"
-    //                         >
-    //                           <path
-    //                             strokeLinecap="round"
-    //                             strokeLinejoin="round"
-    //                             strokeWidth="2"
-    //                             d="M4 4v16h16V4H4zm4 8l4 4 4-4m-4-4v8"
-    //                           />
-    //                         </svg>
-    //                       Download HD - WEBP
-    //                   </div>
-
-    //                   </div>
-
-    //                 )
-    //           }
-              
-    //           {
-
-    //             downloable[focus] === undefined && (
-    //               <div
-    //                 onClick={handleRemoveBg}
-    //                 className={`${loadingRemoveBg === false ? "cursor-pointer": "cursor-progress"} p-4 font-bold text-2xl leading-9 flex items-center`}
-    //               >
-    //                 <svg
-    //                   className={`h-5 w-5 mr-3 text-blue-500 ${loadingRemoveBg ? 'animate-spin' : ''}`}
-    //                   xmlns="http://www.w3.org/2000/svg"
-    //                   fill="none"
-    //                   viewBox="0 0 24 24"
-    //                   stroke="currentColor"
-    //                 >
-    //                   <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-    //                   <path
-    //                     strokeLinecap="round"
-    //                     strokeLinejoin="round"
-    //                     strokeWidth="4"
-    //                     d="M4 12a8 8 0 018-8v8z"
-    //                   ></path>
-    //                 </svg>
-    //                 Remove Background
-    //               </div>
-    //               )
-    //           }
-
-    //           </div>
-    //       </div>
-    //       </motion.div>
-    //       </AnimatePresence>
-    //     }
-
-      
-
-    //   </div>
-
-    // </div>
   );
 
 }
