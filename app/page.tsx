@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { Bounce, toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Image from 'next/image';
+import { mainPageJsonLd } from "@/seo/schema.org";
 
 function Home() {
 
@@ -257,7 +258,7 @@ function Home() {
 
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(mainPageJsonLd) }}
       />  
 
         <ToastContainer />
