@@ -187,6 +187,7 @@ function Home() {
           setLoadingRemoveBg(false);
           const newImages = [...prevImages];
           newImages[focus] = imageUrl;
+          previewBlob[focus] = data;
           return newImages;
         });
 
