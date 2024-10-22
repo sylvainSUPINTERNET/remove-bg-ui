@@ -14,8 +14,8 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Remove Background from Image for Free – Fast & Easy with bg-remove.app",
-  description: "Remove image background with one click. Upload your image and download PNG abd WEBP transparent backgrounds in seconds. Online and Free, no watermarks.",
+  title: "Remove Image Background for Free",
+  description: "Remove image background with one click. Upload your image and download PNG, WEBP transparent backgrounds in seconds. Online and Free, no watermarks.",
 };
 
 export default function RootLayout({
